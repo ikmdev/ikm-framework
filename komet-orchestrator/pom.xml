@@ -25,9 +25,8 @@
     <dependencies>
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
+            <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -35,9 +34,14 @@
             <version>${javafx.version}</version>
         </dependency>
         <dependency>
-            <groupId>dev.ikm.tinkar</groupId>
-            <artifactId>coordinate</artifactId>
-            <version>${tinkar.version}</version>
+            <groupId>dev.ikm.komet</groupId>
+            <artifactId>navigator</artifactId>
+            <version>${komet.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.ikm.komet</groupId>
+            <artifactId>rules</artifactId>
+            <version>${komet.version}</version>
         </dependency>
         <dependency>
             <groupId>dev.ikm.komet</groupId>
@@ -97,8 +101,8 @@
                         <!-- Default configuration for running -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>dev.ikm.komet.orchestrator/dev.ikm.komet.orchestrator.KometOrchestrator
-                            </mainClass>
+                            <mainClass>dev.ikm.komet.orchestrator/dev.ikm.komet.orchestrator.KometOrchestrator</mainClass>
+                            <option>--add-exports javafx.controls/com.sun.javafx.scene.control.behavior=dev.ikm.komet.navigator</option>
                         </configuration>
                     </execution>
                     <execution>
@@ -107,9 +111,9 @@
                         <configuration>
                             <options>
                                 <option>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:8000</option>
+                                <option>--add-exports javafx.controls/com.sun.javafx.scene.control.behavior=dev.ikm.komet.navigator</option>
                             </options>
-                            <mainClass>dev.ikm.komet.orchestrator/dev.ikm.komet.orchestrator.KometOrchestrator
-                            </mainClass>
+                            <mainClass>dev.ikm.komet.orchestrator/dev.ikm.komet.orchestrator.KometOrchestrator</mainClass>
                         </configuration>
                     </execution>
                 </executions>
@@ -173,6 +177,11 @@
                                     <artifactId>stats-provider</artifactId>
                                     <version>${project.parent.version}</version>
                                 </artifactItem>
+                                <dependency>
+                                    <groupId>org.openjfx</groupId>
+                                    <artifactId>javafx-fxml</artifactId>
+                                    <version>${javafx.version}</version>
+                                </dependency>
                             </artifactItems>
                             <outputDirectory>${project.build.directory}/plugins</outputDirectory>
                         </configuration>
@@ -244,6 +253,38 @@
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>${project.build.directory}/plugins/sync</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-window-service-plugins</id>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>dev.ikm.orchestration.provider</groupId>
+                                    <artifactId>window-service</artifactId>
+                                    <version>${project.parent.version}</version>
+                                </artifactItem>
+                                <dependency>
+                                    <groupId>dev.ikm.komet</groupId>
+                                    <artifactId>search</artifactId>
+                                    <version>${komet.version}</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>dev.ikm.komet</groupId>
+                                    <artifactId>details</artifactId>
+                                    <version>${komet.version}</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>dev.ikm.komet</groupId>
+                                    <artifactId>list</artifactId>
+                                    <version>${komet.version}</version>
+                                </dependency>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/plugins/window-service</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>

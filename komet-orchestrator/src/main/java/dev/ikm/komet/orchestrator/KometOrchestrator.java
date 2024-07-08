@@ -134,6 +134,8 @@ public class KometOrchestrator extends Application implements Orchestrator {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> LOG.error("On thread: " + t, e));
+
         System.setProperty("apple.laf.useScreenMenuBar", "false");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Komet");
 
@@ -146,6 +148,7 @@ public class KometOrchestrator extends Application implements Orchestrator {
         }));
         // setup plugin layers
         LOG.info("Starting KometOrchestrator");
+
 
         // setup plugin directory.
         LOG.info("Application working directory: " + System.getProperties().getProperty("user.dir"));

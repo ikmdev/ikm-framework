@@ -7,6 +7,9 @@ module dev.ikm.komet.orchestrator {
     requires dev.ikm.komet.executor;
     requires dev.ikm.komet.preferences;
     requires dev.ikm.komet.progress;
+    requires dev.ikm.komet.navigator;
+    requires dev.ikm.komet.rules;
+
     requires dev.ikm.orchestration.interfaces;
     requires dev.ikm.tinkar.common;
     requires dev.ikm.tinkar.coordinate;
