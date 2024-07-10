@@ -34,6 +34,11 @@
             <version>${javafx.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
             <groupId>dev.ikm.komet</groupId>
             <artifactId>navigator</artifactId>
             <version>${komet.version}</version>
@@ -90,6 +95,10 @@
                 <version>3.11.0</version>
                 <configuration>
                     <release>21</release>
+                    <compilerArgs>
+                        <arg>--add-exports</arg>
+                        <arg>javafx.controls/com.sun.javafx.scene.control.behavior=dev.ikm.komet.navigator</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
@@ -102,7 +111,10 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>dev.ikm.komet.orchestrator/dev.ikm.komet.orchestrator.KometOrchestrator</mainClass>
-                            <option>--add-exports javafx.controls/com.sun.javafx.scene.control.behavior=dev.ikm.komet.navigator</option>
+                            <options>
+                                <option>--add-exports</option>
+                                <option>javafx.controls/com.sun.javafx.scene.control.behavior=dev.ikm.komet.navigator</option>
+                            </options>
                         </configuration>
                     </execution>
                     <execution>
@@ -111,7 +123,8 @@
                         <configuration>
                             <options>
                                 <option>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:8000</option>
-                                <option>--add-exports javafx.controls/com.sun.javafx.scene.control.behavior=dev.ikm.komet.navigator</option>
+                                <option>--add-exports</option>
+                                <option>javafx.controls/com.sun.javafx.scene.control.behavior=dev.ikm.komet.navigator</option>
                             </options>
                             <mainClass>dev.ikm.komet.orchestrator/dev.ikm.komet.orchestrator.KometOrchestrator</mainClass>
                         </configuration>
@@ -177,11 +190,6 @@
                                     <artifactId>stats-provider</artifactId>
                                     <version>${project.parent.version}</version>
                                 </artifactItem>
-                                <dependency>
-                                    <groupId>org.openjfx</groupId>
-                                    <artifactId>javafx-fxml</artifactId>
-                                    <version>${javafx.version}</version>
-                                </dependency>
                             </artifactItems>
                             <outputDirectory>${project.build.directory}/plugins</outputDirectory>
                         </configuration>

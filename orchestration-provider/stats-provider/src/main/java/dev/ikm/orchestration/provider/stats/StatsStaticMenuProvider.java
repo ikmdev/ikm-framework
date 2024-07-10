@@ -1,6 +1,6 @@
 package dev.ikm.orchestration.provider.stats;
 
-import dev.ikm.orchestration.interfaces.MenuProvider;
+import dev.ikm.orchestration.interfaces.StaticMenuProvider;
 import dev.ikm.tinkar.common.service.TinkExecutor;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Window;
@@ -9,9 +9,9 @@ import org.eclipse.collections.api.multimap.MutableMultimap;
 import org.eclipse.collections.impl.factory.Multimaps;
 
 /**
- * The StatsMenuProvider class implements the MenuProvider interface to provide statistical menu items.
+ * The StatsStaticMenuProvider class implements the StaticMenuProvider interface to provide statistical menu items.
  */
-public class StatsMenuProvider implements MenuProvider {
+public class StatsStaticMenuProvider implements StaticMenuProvider {
     /**
      * Retrieves the menu items for a specific window.
      *

@@ -1,6 +1,6 @@
 package dev.ikm.orchestration.provider.sync;
 
-import dev.ikm.orchestration.interfaces.MenuProvider;
+import dev.ikm.orchestration.interfaces.StaticMenuProvider;
 import dev.ikm.tinkar.common.service.TinkExecutor;
 import javafx.event.ActionEvent;
 import javafx.scene.control.MenuItem;
@@ -10,10 +10,10 @@ import org.eclipse.collections.api.multimap.MutableMultimap;
 import org.eclipse.collections.impl.factory.Multimaps;
 
 /**
- * The SyncServiceMenuProvider class implements the MenuProvider interface to provide
+ * The SyncServiceStaticMenuProvider class implements the StaticMenuProvider interface to provide
  * menu items related to Change Set synchronization.
  */
-public class SyncServiceMenuProvider implements MenuProvider {
+public class SyncServiceStaticMenuProvider implements StaticMenuProvider {
 
     /**
      * Retrieves the menu items for Git-based synchronization for the window. Each call creates new MenuItem instances

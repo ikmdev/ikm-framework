@@ -1,9 +1,9 @@
-import dev.ikm.orchestration.interfaces.MenuProvider;
-import dev.ikm.orchestration.provider.sync.SyncServiceMenuProvider;
+import dev.ikm.orchestration.interfaces.StaticMenuProvider;
+import dev.ikm.orchestration.provider.sync.SyncServiceStaticMenuProvider;
 
 /**
  * This module declaration file specifies the dependencies and exports of the dev.ikm.orchestration.provider.sync module.
- * It also provides a MenuProvider implementation for synchronization-related menu items.
+ * It also provides a StaticMenuProvider implementation for synchronization-related menu items.
  *
  * Requirements:
  * - dev.ikm.orchestration.interfaces
@@ -20,7 +20,7 @@ import dev.ikm.orchestration.provider.sync.SyncServiceMenuProvider;
  * - dev.ikm.orchestration.provider.sync.credential to org.controlsfx.controls, javafx.graphics
  *
  * Provides:
- * - MenuProvider with SyncServiceMenuProvider
+ * - StaticMenuProvider with SyncServiceStaticMenuProvider
  */
 module dev.ikm.orchestration.provider.sync {
     requires dev.ikm.orchestration.interfaces;
@@ -35,5 +35,5 @@ module dev.ikm.orchestration.provider.sync {
 
     exports dev.ikm.orchestration.provider.sync.credential to org.controlsfx.controls, javafx.graphics;
 
-    provides MenuProvider with SyncServiceMenuProvider;
+    provides StaticMenuProvider with SyncServiceStaticMenuProvider;
 }

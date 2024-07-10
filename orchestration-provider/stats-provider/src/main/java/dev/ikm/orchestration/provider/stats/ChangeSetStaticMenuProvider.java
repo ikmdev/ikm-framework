@@ -1,7 +1,7 @@
 package dev.ikm.orchestration.provider.stats;
 
 import dev.ikm.orchestration.interfaces.ChangeSetWriterService;
-import dev.ikm.orchestration.interfaces.MenuProvider;
+import dev.ikm.orchestration.interfaces.StaticMenuProvider;
 import dev.ikm.tinkar.common.service.PluggableServiceLoader;
 import dev.ikm.tinkar.common.service.TinkExecutor;
 import dev.ikm.tinkar.terms.TinkarTerm;
@@ -14,9 +14,9 @@ import org.eclipse.collections.impl.factory.Multimaps;
 import java.io.IOException;
 
 /**
- * The ChangeSetMenuProvider class implements the MenuProvider interface to provide menu items related to generate change sets.
+ * The ChangeSetStaticMenuProvider class implements the StaticMenuProvider interface to provide menu items related to generate change sets.
  */
-public class ChangeSetMenuProvider implements MenuProvider {
+public class ChangeSetStaticMenuProvider implements StaticMenuProvider {
     /**
      * Retrieves menu items related to generating change sets.
      *

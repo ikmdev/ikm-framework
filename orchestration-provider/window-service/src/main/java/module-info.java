@@ -1,5 +1,6 @@
-import dev.ikm.orchestration.interfaces.MenuProvider;
-import dev.ikm.orchestration.provider.WindowServiceMenuProvider;
+import dev.ikm.orchestration.interfaces.StaticMenuProvider;
+import dev.ikm.orchestration.interfaces.WindowMenuProvider;
+import dev.ikm.orchestration.provider.WindowServiceStaticMenuProvider;
 
 module dev.ikm.orchestration.provider.window.service {
     requires dev.ikm.komet.details;
@@ -17,5 +18,5 @@ module dev.ikm.orchestration.provider.window.service {
     requires org.eclipse.collections.api;
     requires org.slf4j;
 
-    provides MenuProvider with WindowServiceMenuProvider;
+    provides WindowMenuProvider with WindowServiceStaticMenuProvider;
 }

@@ -32,7 +32,7 @@
         <module>plugin-service-loader</module>
         <module>orchestration-interfaces</module>
         <module>orchestration-provider</module>
-        <!-- Note orchestration provider must be last to pick up changes
+        <!-- Note komet-orchestrator must be last to pick up changes
              to modules that are plugins, but not dependencies (plugins are
              transparent to the build order) -->
         <module>komet-orchestrator</module>

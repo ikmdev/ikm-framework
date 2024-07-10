@@ -21,7 +21,6 @@ import dev.ikm.komet.table.TableNodeFactory;
 import dev.ikm.tinkar.common.alert.AlertObject;
 import dev.ikm.tinkar.common.alert.AlertStreams;
 import dev.ikm.tinkar.common.binary.Encodable;
-import dev.ikm.tinkar.common.service.PluggableServiceLoader;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
@@ -44,7 +43,6 @@ import dev.ikm.komet.search.SearchNodeFactory;
 import java.lang.annotation.Annotation;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import static dev.ikm.komet.framework.KometNodeFactory.KOMET_NODES;
@@ -58,29 +56,27 @@ public class NewClassicKometWindowTask extends Task<Void> {
 
     @Override
     protected Void call() throws Exception {
+        KometPreferences appPreferences = KometPreferencesImpl.getConfigurationRootPreferences();
+
         Module graphicsModule = ModuleLayer.boot()
                 .findModule("dev.ikm.komet.framework")
                 // Optional<Module> at this point
                 .orElseThrow();
         Stage stage = new Stage();
-        final String windowTitle = "Komet " + LocalDateTime.now().format(SHORT_MIN_FORMATTER);
-        stage.setTitle(windowTitle);
 
-        KometPreferences appPreferences = KometPreferencesImpl.getConfigurationRootPreferences();
         List<String> savedWindows = appPreferences.getList(WindowServiceKeys.SAVED_WINDOWS);
+
+        String windowTitle = "Komet " + LocalDateTime.now().format(SHORT_MIN_FORMATTER);
+
+        int index = 97;
+        while (savedWindows.contains(windowTitle)) {
+            windowTitle = "Komet " + LocalDateTime.now().format(SHORT_MIN_FORMATTER) + Character.toString(index++);
+        }
+        stage.setTitle(windowTitle);
         savedWindows.add(windowTitle);
         appPreferences.putList(WindowServiceKeys.SAVED_WINDOWS, savedWindows);
         KometPreferences windowPreferences = appPreferences.node(windowTitle);
 
-        ClassLoader contextClassLoaderToRestore = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-//        Optional<Module> optionalJavaFxControlsModule = this.getClass().getModule().getLayer().findModule("javafx.controls");
-//        Optional<Module> optionalNavigatorModule = this.getClass().getModule().getLayer().findModule("dev.ikm.komet.navigator");
-//
-//        optionalJavaFxControlsModule.ifPresent(javafxControlsModule -> {
-//                    optionalNavigatorModule.ifPresent(navigatorModule -> javafxControlsModule.addExports(
-//                            "com.sun.javafx.scene.control.behavior", navigatorModule));
-//        });
 
         FXMLLoader kometStageLoader = new FXMLLoader(MainWindowRecord.class.getResource("KometStageScene.fxml"));
         // MultiParentGraphViewController
@@ -118,8 +114,6 @@ public class NewClassicKometWindowTask extends Task<Void> {
                 restoreTab(windowPreferences, rightTabPreferencesName, controller.windowView(), node -> controller.rightBorderPaneSetCenter(node));
             });
         }
-
-        Thread.currentThread().setContextClassLoader(contextClassLoaderToRestore);
 
         //Setting X and Y coordinates for location of the Komet stage
         stage.setX(controller.windowSettings().xLocationProperty().get());

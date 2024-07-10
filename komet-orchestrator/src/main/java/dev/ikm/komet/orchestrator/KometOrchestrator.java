@@ -19,6 +19,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.eclipse.collections.api.multimap.ImmutableMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -220,8 +221,7 @@ public class KometOrchestrator extends Application implements Orchestrator {
                     MenuBar menuBar = new MenuBar();
                     menuBar.getMenus().add(new Menu("File"));
                     menuBar.getMenus().add(new Menu("Edit"));
-                    menuBar.getMenus().add(new Menu("Window"));
-                    addMenuItems(menuBar);
+                    addMenuItems(this.primaryStage, menuBar);
 
                     TabPane progressTabPane = new TabPane();
                     BorderPane rootBorderPane = new BorderPane();
@@ -276,13 +276,14 @@ public class KometOrchestrator extends Application implements Orchestrator {
     }
 
     /**
-     * Adds menu items to the specified menu bar based on the provided MenuProvider implementation.
+     * Adds menu items to the specified menu bar based on the provided StaticMenuProvider
+     * implementation, and then appends a Window menu from the WindowMenuProvider.
      *
      * @param menuBar the menu bar to add the menu items to
      */
-    private void addMenuItems(MenuBar menuBar) {
+    private void addMenuItems(Window window, MenuBar menuBar) {
         // Add menu items...
-        ServiceLoader<MenuProvider> menuProviders = PluggableServiceLoader.load(MenuProvider.class);
+        ServiceLoader<StaticMenuProvider> menuProviders = PluggableServiceLoader.load(StaticMenuProvider.class);
         menuProviders.forEach(menuProvider -> {
             ImmutableMultimap<String, MenuItem> menuMap = menuProvider.getMenuItems(this.primaryStage);
             menuMap.forEachKeyValue((menuName, menuItem) -> {
@@ -301,6 +302,8 @@ public class KometOrchestrator extends Application implements Orchestrator {
                 }
             });
         });
+        Menu windowMenu = PluggableServiceLoader.first(WindowMenuProvider.class).getWindowMenu(window);
+        menuBar.getMenus().add(windowMenu);
     }
 
     /**
