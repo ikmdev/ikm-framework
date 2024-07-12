@@ -15,7 +15,7 @@
  */
 package dev.ikm.plugin.service.loader;
 
-import dev.ikm.plugin.layer.PluggableService;
+import dev.ikm.plugin.layer.PluggableServiceManager;
 import dev.ikm.plugin.layer.PluginLifecycleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,14 +75,14 @@ public class PluginServiceLoader implements dev.ikm.plugin.layer.PluginServiceLo
     /**
      * Notifies the PluginServiceLoader that a plugin layer has been added.
      * This method sets the PluginServiceLoader as the service provider
-     * for the PluggableService.
+     * for the PluggableServiceManager.
      *
      * @param pluginLayerName the name of the plugin layer that was added
      * @param pluginLayer     the ModuleLayer representing the added plugin layer
      */
     @Override
     public void pluginLayerAdded(String pluginLayerName, ModuleLayer pluginLayer) {
-        PluggableService.setServiceProvider(this);
+        PluggableServiceManager.setServiceProvider(this);
         LOG.info("added plugin layer: " + pluginLayerName + ": " + pluginLayer);
     }
 

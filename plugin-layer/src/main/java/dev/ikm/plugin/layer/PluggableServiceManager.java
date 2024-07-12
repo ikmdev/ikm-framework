@@ -17,7 +17,6 @@ package dev.ikm.plugin.layer;
 
 import dev.ikm.plugin.layer.internal.PluginWatchDirectory;
 import dev.ikm.plugin.layer.internal.Layers;
-import dev.ikm.tinkar.common.service.PluginServiceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,16 +26,17 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * The PluggableServiceManager class represents a service that supports extensibility through plugins.
- * It provides methods to manage and access the plugins.
+ * The PluggableServiceManager class enables provision of plugin services via jar files.
+ * This manager handles loading module layers from jar files places in a specified plugins
+ * directory. It provides methods to load and access the plugins.
  * <p>
- * This class follows the Singleton design pattern to ensure that only one instance of the service exists.
+ * This class follows the Singleton design pattern to ensure that only one instance of the PluggableServiceManager exists.
  * Use the {@link #setPluginDirectory(Path)} method to initialize the service.
  * <p>
  * Use the {@link #loader(Class)} method to obtain a {@link ServiceLoader} that can be used to load plugin services
  * of a specific type.
  */
-public class PluggableServiceManager implements PluginServiceLoader {
+public class PluggableServiceManager {
     private static final Logger LOG = LoggerFactory.getLogger(PluggableServiceManager.class);
 
     public static final String PATH_KEY = "dev.ikm.tinkar.plugin.service.boot.PluggableServiceManager.PATH_KEY";
@@ -61,16 +61,6 @@ public class PluggableServiceManager implements PluginServiceLoader {
         }
         this.layers = new Layers(pluginsDirectories);
         deployPluginServiceLoader(this.layers.getModuleLayers());
-    }
-
-
-    @Override
-    public boolean ensureUses(Class<?> service) {
-        return getPluginServiceLoader().ensureUses(service);
-    }
-
-    public static PluginServiceLoader getPluginServiceLoader() {
-        return PluggableServiceManager.singletonReference.get();
     }
 
     public static Optional<String> findPluggableServiceLoaderJar(File dirPath, String artifactKey){
@@ -139,7 +129,7 @@ public class PluggableServiceManager implements PluginServiceLoader {
      * @param <S>     the type of the service
      * @return a ServiceLoader object for the given service class
      */
-    public <S> ServiceLoader<S> loader(Class<S> service) {
+    public static <S> ServiceLoader<S> loader(Class<S> service) {
         if (PluggableServiceManager.pluginServiceLoader == null) {
             throw new IllegalStateException("PluginServiceLoader has not been set. " +
                     "Use the setServiceProvider() method to set the PluginServiceLoader.");

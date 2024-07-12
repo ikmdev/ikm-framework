@@ -15,7 +15,7 @@
  */
 package dev.ikm.plugin.service.loader;
 
-import dev.ikm.plugin.layer.PluggableServiceManager;
+import dev.ikm.plugin.layer.IkmServiceLoader;
 import dev.ikm.plugin.layer.PluginLifecycleListener;
 import dev.ikm.tinkar.common.service.PluginServiceLoader;
 import org.slf4j.Logger;
@@ -61,7 +61,7 @@ public class PluginServiceFinder implements PluginServiceLoader, PluginLifecycle
 
     @Override
     public void pluginLayerAdded(String pluginLayerName, ModuleLayer pluginLayer) {
-        PluggableServiceManager.setServiceProvider(this);
+        IkmServiceLoader.setServiceProvider(this);
         LOG.info("added plugin layer: " + pluginLayerName + ": " + pluginLayer);
     }
 

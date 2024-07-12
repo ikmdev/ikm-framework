@@ -48,7 +48,7 @@ public interface PluginServiceLoader {
      * a service dependence on a given service interface. The method was exclusively provided
      * to support libraries use the ServiceLoader class to locate services on behalf of other modules.
      * See: https://www.infoq.com/articles/java11-aware-service-module/
-     * Without adding these service classes to the PluggableService's PluginServiceLoader, it
+     * Without adding these service classes to the PluggableServiceManager's PluginServiceLoader, it
      * won't find plugin services it does not know about in advance. The service interfaces must
      * be defined in a parent layer.
      * <p>

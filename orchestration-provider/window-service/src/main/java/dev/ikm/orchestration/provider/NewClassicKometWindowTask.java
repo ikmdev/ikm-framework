@@ -40,10 +40,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import dev.ikm.komet.search.SearchNodeFactory;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.prefs.BackingStoreException;
 
 import static dev.ikm.komet.framework.KometNodeFactory.KOMET_NODES;
 import static dev.ikm.komet.framework.window.WindowSettings.Keys.*;
@@ -58,10 +60,6 @@ public class NewClassicKometWindowTask extends Task<Void> {
     protected Void call() throws Exception {
         KometPreferences appPreferences = KometPreferencesImpl.getConfigurationRootPreferences();
 
-        Module graphicsModule = ModuleLayer.boot()
-                .findModule("dev.ikm.komet.framework")
-                // Optional<Module> at this point
-                .orElseThrow();
         Stage stage = new Stage();
 
         List<String> savedWindows = appPreferences.getList(WindowServiceKeys.SAVED_WINDOWS);
@@ -77,7 +75,15 @@ public class NewClassicKometWindowTask extends Task<Void> {
         appPreferences.putList(WindowServiceKeys.SAVED_WINDOWS, savedWindows);
         KometPreferences windowPreferences = appPreferences.node(windowTitle);
 
+        loadFromPreferences(stage, windowPreferences);
+        return null;
+    }
 
+    public static void loadFromPreferences(Stage stage, KometPreferences windowPreferences) throws IOException, BackingStoreException {
+        Module graphicsModule = ModuleLayer.boot()
+                .findModule("dev.ikm.komet.framework")
+                // Optional<Module> at this point
+                .orElseThrow();
         FXMLLoader kometStageLoader = new FXMLLoader(MainWindowRecord.class.getResource("KometStageScene.fxml"));
         // MultiParentGraphViewController
         BorderPane kometRoot = kometStageLoader.load();
@@ -120,16 +126,21 @@ public class NewClassicKometWindowTask extends Task<Void> {
         stage.setY(controller.windowSettings().yLocationProperty().get());
         stage.setHeight(controller.windowSettings().heightProperty().get());
         stage.setWidth(controller.windowSettings().widthProperty().get());
-        stage.show();
+        finishSetup(stage, windowPreferences);
+    }
 
-        windowPreferences.sync();
-        appPreferences.sync();
-        stage.toFront();
-        return null;
+    private static void finishSetup(Stage stage, KometPreferences windowPreferences) {
+        try {
+            stage.show();
+            windowPreferences.parent().sync();
+            stage.toFront();
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
-    private void restoreTab(KometPreferences windowPreferences, String tabPreferenceNodeName, ObservableViewNoOverride windowView, Consumer<Node> nodeConsumer) {
+    private static void restoreTab(KometPreferences windowPreferences, String tabPreferenceNodeName, ObservableViewNoOverride windowView, Consumer<Node> nodeConsumer) {
         LOG.info("Restoring from: " + tabPreferenceNodeName);
         KometPreferences itemPreferences = windowPreferences.node(KOMET_NODES + tabPreferenceNodeName);
         itemPreferences.get(WindowComponent.WindowComponentKeys.FACTORY_CLASS).ifPresent(factoryClassName -> {
@@ -217,7 +228,7 @@ public class NewClassicKometWindowTask extends Task<Void> {
     }
 
 
-    private void generateWindowMenu(BorderPane kometRoot) {
+    private static void generateWindowMenu(BorderPane kometRoot) {
         MenuBar menuBar = new MenuBar();
         Menu fileMenu = new Menu("File");
 

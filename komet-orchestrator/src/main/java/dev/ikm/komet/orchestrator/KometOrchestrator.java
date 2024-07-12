@@ -6,7 +6,7 @@ import dev.ikm.komet.preferences.Preferences;
 import dev.ikm.komet.progress.CompletionNodeFactory;
 import dev.ikm.komet.progress.ProgressNodeFactory;
 import dev.ikm.orchestration.interfaces.*;
-import dev.ikm.plugin.layer.PluggableServiceManager;
+import dev.ikm.plugin.layer.IkmServiceLoader;
 import dev.ikm.tinkar.common.service.PluggableServiceLoader;
 import dev.ikm.tinkar.common.service.PrimitiveData;
 import dev.ikm.komet.preferences.PreferencesService;
@@ -162,9 +162,9 @@ public class KometOrchestrator extends Application implements Orchestrator {
         }
         pluginPath.toFile().mkdirs();
         LOG.info("Plugin directory: " + pluginPath.toAbsolutePath());
-        PluggableServiceManager.setPluginDirectory(pluginPath);
+        IkmServiceLoader.setPluginDirectory(pluginPath);
 
-        PluggableServiceLoader.setPluggableServiceLoader(PluggableServiceManager.getPluginServiceLoader());
+        PluggableServiceLoader.setPluggableServiceLoader(IkmServiceLoader.getPluginServiceLoader());
 
         // Access Preferences
         KometPreferences userPreferences = PreferencesService.get().getUserPreferences();

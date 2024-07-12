@@ -4,7 +4,9 @@ import dev.ikm.tinkar.common.service.PluggableServiceLoader;
 import org.slf4j.spi.SLF4JServiceProvider;
 
 module dev.ikm.komet.orchestrator {
+    requires dev.ikm.komet.details;
     requires dev.ikm.komet.executor;
+    requires dev.ikm.komet.list;
     requires dev.ikm.komet.preferences;
     requires dev.ikm.komet.progress;
     requires dev.ikm.komet.navigator;

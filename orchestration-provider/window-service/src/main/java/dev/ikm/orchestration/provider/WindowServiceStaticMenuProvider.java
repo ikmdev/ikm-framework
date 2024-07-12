@@ -56,6 +56,12 @@ public class WindowServiceStaticMenuProvider implements WindowMenuProvider {
         return windowMenu;
     }
 
+    public static void removeWindow(String windowName) {
+        for (Menu windowMenu : windowMenuMap.values()) {
+            windowMenu.getItems().removeIf(menuItem -> menuItem.getText().equals(windowName));
+        }
+    }
+
     private static class RunThenUpdateWindowMenus extends Task<Void> {
         Task taskToRun;
 

@@ -40,6 +40,16 @@
         </dependency>
         <dependency>
             <groupId>dev.ikm.komet</groupId>
+            <artifactId>details</artifactId>
+            <version>${komet.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.ikm.komet</groupId>
+            <artifactId>list</artifactId>
+            <version>${komet.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.ikm.komet</groupId>
             <artifactId>navigator</artifactId>
             <version>${komet.version}</version>
         </dependency>
@@ -276,21 +286,11 @@
                                     <artifactId>window-service</artifactId>
                                     <version>${project.parent.version}</version>
                                 </artifactItem>
-                                <dependency>
+                                <artifactItem>
                                     <groupId>dev.ikm.komet</groupId>
                                     <artifactId>search</artifactId>
                                     <version>${komet.version}</version>
-                                </dependency>
-                                <dependency>
-                                    <groupId>dev.ikm.komet</groupId>
-                                    <artifactId>details</artifactId>
-                                    <version>${komet.version}</version>
-                                </dependency>
-                                <dependency>
-                                    <groupId>dev.ikm.komet</groupId>
-                                    <artifactId>list</artifactId>
-                                    <version>${komet.version}</version>
-                                </dependency>
+                                </artifactItem>
                             </artifactItems>
                             <outputDirectory>${project.build.directory}/plugins/window-service</outputDirectory>
                         </configuration>
