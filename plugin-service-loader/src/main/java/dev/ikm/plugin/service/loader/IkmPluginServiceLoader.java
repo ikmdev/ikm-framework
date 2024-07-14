@@ -16,10 +16,14 @@
 package dev.ikm.plugin.service.loader;
 
 import dev.ikm.tinkar.common.service.PluginServiceLoader;
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.MutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * The IkmPluginServiceLoader class is responsible for loading and managing service loaders
@@ -29,6 +33,8 @@ import java.util.*;
  */
 public class IkmPluginServiceLoader implements PluginServiceLoader {
     private static final Logger LOG = LoggerFactory.getLogger(IkmPluginServiceLoader.class);
+    ReentrantLock lock = new ReentrantLock();
+    private ImmutableSet<ClassLoader> classLoaders;
 
     /**
      * Returns a ServiceLoader for the given pluggable service class.
@@ -73,13 +79,24 @@ public class IkmPluginServiceLoader implements PluginServiceLoader {
 
     @Override
     public Class<?> forName(String className) throws ClassNotFoundException {
-        Set<ClassLoader> classLoaders = new HashSet<>();
-        classLoaders.add(IkmPluginServiceLoader.class.getClassLoader());
-        for (ModuleLayer moduleLayer : this.getClass().getModule().getLayer().parents()) {
-            for (Module module : moduleLayer.modules()) {
-                if (module.getClassLoader() != null) {
-                    classLoaders.add(module.getClassLoader());
+        if (classLoaders == null) {
+            lock.lock();
+            try {
+                if (classLoaders == null) {
+                    MutableSet<ClassLoader> classLoaderSet = Sets.mutable.empty();
+                    classLoaderSet.add(IkmPluginServiceLoader.class.getClassLoader());
+                    for (ModuleLayer moduleLayer : this.getClass().getModule().getLayer().parents()) {
+                        for (Module module : moduleLayer.modules()) {
+                            if (module.getClassLoader() != null) {
+                                classLoaderSet.add(module.getClassLoader());
+                            }
+                        }
+                    }
+                    classLoaders = classLoaderSet.toImmutableSet();
                 }
+
+            } finally {
+                lock.unlock();
             }
         }
         for (ClassLoader classLoader : classLoaders) {

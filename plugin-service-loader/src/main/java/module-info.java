@@ -12,6 +12,7 @@ module dev.ikm.plugin.service.loader {
     requires dev.ikm.tinkar.plugin.service.boot;
     requires org.slf4j;
     requires dev.ikm.tinkar.common;
+    requires org.eclipse.collections.api;
 
     provides PluginServiceLoader with IkmPluginServiceLoader;
 }
