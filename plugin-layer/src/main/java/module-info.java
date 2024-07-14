@@ -1,5 +1,3 @@
-import dev.ikm.plugin.layer.PluginLifecycleListener;
-import dev.ikm.plugin.layer.internal.PluginLifecycleListenerLogger;
 import dev.ikm.tinkar.common.service.PluginServiceLoader;
 
 /**
@@ -16,7 +14,4 @@ module dev.ikm.tinkar.plugin.service.boot {
     exports dev.ikm.plugin.layer;
 
     uses PluginServiceLoader;
-    uses PluginLifecycleListener;
-
-    provides PluginLifecycleListener with PluginLifecycleListenerLogger;
 }

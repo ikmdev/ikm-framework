@@ -15,7 +15,7 @@
  */
 package dev.ikm.plugin.layer.internal;
 
-import dev.ikm.plugin.layer.IkmServiceLoader;
+import dev.ikm.plugin.layer.IkmServiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,7 +109,7 @@ public class Layers {
         PluginNameAndModuleLayer pluginNameAndModuleLayer = new PluginNameAndModuleLayer(pluginWatchDirectory.name(), pluginModuleLayer);
         moduleLayers.add(pluginNameAndModuleLayer);
         // Create new service loader with new layer...
-        IkmServiceLoader.deployPluginServiceLoader(moduleLayers.stream().map(pluginNameAndModuleLayerFromStream -> pluginNameAndModuleLayerFromStream.moduleLayer()).toList());
+        IkmServiceManager.deployPluginServiceLoader(moduleLayers.stream().map(pluginNameAndModuleLayerFromStream -> pluginNameAndModuleLayerFromStream.moduleLayer()).toList());
     }
 
     private static List<Path> getPluginPathEntries(PluginWatchDirectory pluginWatchDirectory) {

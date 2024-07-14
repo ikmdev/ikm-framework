@@ -1,7 +1,7 @@
 package dev.ikm.orchestration.provider.sync;
 
 import dev.ikm.orchestration.interfaces.ChangeSetWriterService;
-import dev.ikm.tinkar.common.service.PluggableServiceLoader;
+import dev.ikm.tinkar.common.service.PluggableService;
 import dev.ikm.tinkar.common.service.TrackingCallable;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -52,7 +52,7 @@ public class AddChangesetsTask extends TrackingCallable<Void> {
     protected Void compute() throws Exception {
         try {
             this.updateMessage("Pausing change set writer service");
-            ChangeSetWriterService changeSetWriterService = PluggableServiceLoader.first(ChangeSetWriterService.class);
+            ChangeSetWriterService changeSetWriterService = PluggableService.first(ChangeSetWriterService.class);
             changeSetWriterService.pause();
 
             Git git = Git.open(changeSetFolder.toFile());

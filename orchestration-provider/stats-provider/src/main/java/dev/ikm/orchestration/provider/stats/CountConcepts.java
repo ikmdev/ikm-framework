@@ -1,7 +1,7 @@
 package dev.ikm.orchestration.provider.stats;
 
 import dev.ikm.orchestration.interfaces.StatusReportService;
-import dev.ikm.tinkar.common.service.PluggableServiceLoader;
+import dev.ikm.tinkar.common.service.PluggableService;
 import dev.ikm.tinkar.common.service.PrimitiveData;
 import dev.ikm.tinkar.common.service.TrackingCallable;
 
@@ -30,7 +30,7 @@ public class CountConcepts extends TrackingCallable<Void> {
         LongAdder count = new LongAdder();
         try {
             PrimitiveData.get().forEachConceptNid((nid) -> count.increment());
-            PluggableServiceLoader.first(StatusReportService.class).reportStatus("Total concept count: " + NumberFormat.getInstance().format(count.sum()));
+            PluggableService.first(StatusReportService.class).reportStatus("Total concept count: " + NumberFormat.getInstance().format(count.sum()));
             return null;
         } finally {
             updateTitle("Counted " + NumberFormat.getInstance().format(count.sum()) + " concepts");

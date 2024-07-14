@@ -17,6 +17,8 @@ package dev.ikm.plugin.layer;
 
 import dev.ikm.plugin.layer.internal.PluginWatchDirectory;
 import dev.ikm.plugin.layer.internal.Layers;
+import dev.ikm.tinkar.common.service.PluggableService;
+import dev.ikm.tinkar.common.service.PluginServiceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,38 +28,36 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * The PluggableServiceManager class enables provision of plugin services via jar files.
+ * The IkmServiceManager class enables provision of plugin services via jar files.
  * This manager handles loading module layers from jar files places in a specified plugins
  * directory. It provides methods to load and access the plugins.
  * <p>
- * This class follows the Singleton design pattern to ensure that only one instance of the PluggableServiceManager exists.
+ * This class follows the Singleton design pattern to ensure that only one instance of the IkmServiceManager exists.
  * Use the {@link #setPluginDirectory(Path)} method to initialize the service.
  * <p>
- * Use the {@link #loader(Class)} method to obtain a {@link ServiceLoader} that can be used to load plugin services
+ * Use the {@link dev.ikm.tinkar.common.service.PluggableService#load(Class)} method to obtain a {@link ServiceLoader} that can be used to load plugin services
  * of a specific type.
  */
-public class PluggableServiceManager {
-    private static final Logger LOG = LoggerFactory.getLogger(PluggableServiceManager.class);
+public class IkmServiceManager {
+    private static final Logger LOG = LoggerFactory.getLogger(IkmServiceManager.class);
 
-    public static final String PATH_KEY = "dev.ikm.tinkar.plugin.service.boot.PluggableServiceManager.PATH_KEY";
-    public static final String ARTIFACT_KEY = "dev.ikm.tinkar.plugin.service.boot.PluggableServiceManager.ARTIFACT_KEY";
+    public static final String PATH_KEY = "dev.ikm.tinkar.plugin.service.boot.IkmServiceManager.PATH_KEY";
+    public static final String ARTIFACT_KEY = "dev.ikm.tinkar.plugin.service.boot.IkmServiceManager.ARTIFACT_KEY";
     private static final String DefaultPluggableServiceLoaderArtifactId = "plugin-service-loader";
-
-    private static PluginServiceLoader pluginServiceLoader;
 
     private final Layers layers;
 
-    private static AtomicReference<PluggableServiceManager> singletonReference = new AtomicReference<>();
+    private static AtomicReference<IkmServiceManager> singletonReference = new AtomicReference<>();
 
     /**
-     * Creates an instance of the PluggableServiceManager class.
+     * Creates an instance of the IkmServiceManager class.
      *
      * @param pluginsDirectories a set of PluginWatchDirectory objects representing the directories where plugins are stored
-     * @throws IllegalStateException if PluggableServiceManager has already been set up
+     * @throws IllegalStateException if IkmServiceManager has already been set up
      */
-    private PluggableServiceManager(Set<PluginWatchDirectory> pluginsDirectories) {
-        if (PluggableServiceManager.singletonReference.compareAndSet(null, this) == false) {
-            throw new IllegalStateException("PluggableServiceManager must only be set up once. ");
+    private IkmServiceManager(Set<PluginWatchDirectory> pluginsDirectories) {
+        if (IkmServiceManager.singletonReference.compareAndSet(null, this) == false) {
+            throw new IllegalStateException("IkmServiceManager must only be set up once. ");
         }
         this.layers = new Layers(pluginsDirectories);
         deployPluginServiceLoader(this.layers.getModuleLayers());
@@ -101,7 +101,7 @@ public class PluggableServiceManager {
         ServiceLoader<PluginServiceLoader> pluggableServiceLoaderLoader =
                 ServiceLoader.load(pluginServiceLoaderLayer, PluginServiceLoader.class);
         Optional<PluginServiceLoader> pluggableServiceLoaderOptional = pluggableServiceLoaderLoader.findFirst();
-        pluggableServiceLoaderOptional.ifPresent(serviceLoader -> PluggableServiceManager.setServiceProvider(serviceLoader));
+        pluggableServiceLoaderOptional.ifPresent(serviceLoader -> PluggableService.setPluggableServiceLoader(serviceLoader));
     }
 
     /**
@@ -110,33 +110,7 @@ public class PluggableServiceManager {
      * @param pluginDirectory the path to the directory where plugins are stored
      */
     public static void setPluginDirectory(Path pluginDirectory) {
-        new PluggableServiceManager(Set.of(new PluginWatchDirectory("Standard plugins directory", pluginDirectory)));
+        new IkmServiceManager(Set.of(new PluginWatchDirectory("Standard plugins directory", pluginDirectory)));
     }
 
-    /**
-     * Sets the service provider for the PluggableServiceManager.
-     *
-     * @param pluginServiceLoader the PluginServiceLoader implementation used to load service providers
-     */
-    public static void setServiceProvider(PluginServiceLoader pluginServiceLoader) {
-        PluggableServiceManager.pluginServiceLoader = pluginServiceLoader;
-    }
-
-    /**
-     * Returns a ServiceLoader for the given pluggable service class.
-     *
-     * @param service the pluggable service class
-     * @param <S>     the type of the service
-     * @return a ServiceLoader object for the given service class
-     */
-    public static <S> ServiceLoader<S> loader(Class<S> service) {
-        if (PluggableServiceManager.pluginServiceLoader == null) {
-            throw new IllegalStateException("PluginServiceLoader has not been set. " +
-                    "Use the setServiceProvider() method to set the PluginServiceLoader.");
-        }
-        if (PluggableServiceManager.pluginServiceLoader.ensureUses(service)) {
-            LOG.info("Adding uses {} to : PluggableServiceManager.pluginServiceLoader.", service.getName());
-        }
-        return PluggableServiceManager.pluginServiceLoader.loader(service);
-    }
 }

@@ -15,21 +15,20 @@
  */
 package dev.ikm.plugin.service.loader;
 
-import dev.ikm.plugin.layer.PluggableServiceManager;
-import dev.ikm.plugin.layer.PluginLifecycleListener;
+import dev.ikm.tinkar.common.service.PluginServiceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ServiceLoader;
+import java.util.*;
 
 /**
- * The PluginServiceLoader class is responsible for loading and managing service loaders
- * for pluggable services. It implements the PluginServiceLoader interface and also serves
+ * The IkmPluginServiceLoader class is responsible for loading and managing service loaders
+ * for pluggable services. It implements the IkmPluginServiceLoader interface and also serves
  * as a PluginLifecycleListener to receive notifications about the addition or removal of
  * plugin layers.
  */
-public class PluginServiceLoader implements dev.ikm.plugin.layer.PluginServiceLoader, PluginLifecycleListener {
-    private static final Logger LOG = LoggerFactory.getLogger(PluginServiceLoader.class);
+public class IkmPluginServiceLoader implements PluginServiceLoader {
+    private static final Logger LOG = LoggerFactory.getLogger(IkmPluginServiceLoader.class);
 
     /**
      * Returns a ServiceLoader for the given pluggable service class.
@@ -49,7 +48,8 @@ public class PluginServiceLoader implements dev.ikm.plugin.layer.PluginServiceLo
      */
     @Override
     public <S> ServiceLoader<S> loader(Class<S> service) {
-        return ServiceLoader.load(PluginServiceLoader.class.getModule().getLayer(), service);
+        ensureUses(service);
+        return ServiceLoader.load(IkmPluginServiceLoader.class.getModule().getLayer(), service);
     }
 
     /**
@@ -60,10 +60,9 @@ public class PluginServiceLoader implements dev.ikm.plugin.layer.PluginServiceLo
      *
      * @param service the service class to be checked
      * @return true if the service was added to the uses clause of the module
-     *         (meaning it was not already included for this module),
-     *         false otherwise
+     * (meaning it was not already included for this module),
+     * false otherwise
      */
-    @Override
     public boolean ensureUses(Class<?> service) {
         if (!this.getClass().getModule().canUse(service)) {
             this.getClass().getModule().addUses(service);
@@ -72,28 +71,24 @@ public class PluginServiceLoader implements dev.ikm.plugin.layer.PluginServiceLo
         return false;
     }
 
-    /**
-     * Notifies the PluginServiceLoader that a plugin layer has been added.
-     * This method sets the PluginServiceLoader as the service provider
-     * for the PluggableServiceManager.
-     *
-     * @param pluginLayerName the name of the plugin layer that was added
-     * @param pluginLayer     the ModuleLayer representing the added plugin layer
-     */
     @Override
-    public void pluginLayerAdded(String pluginLayerName, ModuleLayer pluginLayer) {
-        PluggableServiceManager.setServiceProvider(this);
-        LOG.info("added plugin layer: " + pluginLayerName + ": " + pluginLayer);
-    }
-
-    /**
-     * Notifies the PluginServiceLoader that a plugin layer is being removed.
-     *
-     * @param pluginLayerName the name of the plugin layer being removed
-     * @param pluginLayer the ModuleLayer representing the plugin layer being removed
-     */
-    @Override
-    public void pluginLayerBeingRemoved(String pluginLayerName, ModuleLayer pluginLayer) {
-        LOG.info("removing plugin layer: " + pluginLayerName + ": " + pluginLayer);
+    public Class<?> forName(String className) throws ClassNotFoundException {
+        Set<ClassLoader> classLoaders = new HashSet<>();
+        classLoaders.add(IkmPluginServiceLoader.class.getClassLoader());
+        for (ModuleLayer moduleLayer : this.getClass().getModule().getLayer().parents()) {
+            for (Module module : moduleLayer.modules()) {
+                if (module.getClassLoader() != null) {
+                    classLoaders.add(module.getClassLoader());
+                }
+            }
+        }
+        for (ClassLoader classLoader : classLoaders) {
+            try {
+                return Class.forName(className, true, classLoader);
+            } catch (ClassNotFoundException e) {
+                // Try again...
+            }
+        }
+        throw new ClassNotFoundException(className);
     }
 }

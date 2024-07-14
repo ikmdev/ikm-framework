@@ -1,7 +1,7 @@
 package dev.ikm.orchestration.provider.changeset.writer;
 
 import dev.ikm.orchestration.interfaces.ChangeSetWriterService;
-import dev.ikm.tinkar.common.service.PluggableServiceLoader;
+import dev.ikm.tinkar.common.service.PluggableService;
 import dev.ikm.tinkar.common.service.ServiceKeys;
 import dev.ikm.tinkar.common.service.ServiceProperties;
 import dev.ikm.tinkar.common.util.broadcast.Subscriber;
@@ -35,7 +35,7 @@ public class ChangeSetWriterManager implements Subscriber<Integer>, ChangeSetWri
      * The ChangeSetWriterManager class manages the ChangeSetWriter and its configuration.
      */
     public ChangeSetWriterManager() {
-        this.entityService = PluggableServiceLoader.first(EntityService.class);
+        this.entityService = PluggableService.first(EntityService.class);
         Optional<File> optionalDataStoreRoot = ServiceProperties.get(ServiceKeys.DATA_STORE_ROOT);
         optionalDataStoreRoot.ifPresentOrElse(dataStoreRoot -> {
             ChangeSetWriterManager.this.changeSetFolder = Paths.get(dataStoreRoot.getAbsolutePath(), "changesets");

@@ -2,7 +2,7 @@ package dev.ikm.orchestration.provider.stats;
 
 import dev.ikm.orchestration.interfaces.ChangeSetWriterService;
 import dev.ikm.orchestration.interfaces.StaticMenuProvider;
-import dev.ikm.tinkar.common.service.PluggableServiceLoader;
+import dev.ikm.tinkar.common.service.PluggableService;
 import dev.ikm.tinkar.common.service.TinkExecutor;
 import dev.ikm.tinkar.terms.TinkarTerm;
 import javafx.scene.control.MenuItem;
@@ -31,7 +31,7 @@ public class ChangeSetStaticMenuProvider implements StaticMenuProvider {
         countEntitiesMenuItem.setOnAction(event -> {
             TinkExecutor.threadPool().submit(() -> {
                 try {
-                    ChangeSetWriterService changeSetWriterService = PluggableServiceLoader.first(ChangeSetWriterService.class);
+                    ChangeSetWriterService changeSetWriterService = PluggableService.first(ChangeSetWriterService.class);
                     if (changeSetWriterService.getWriteStatus() == false) {
                         changeSetWriterService.resume();
                     }

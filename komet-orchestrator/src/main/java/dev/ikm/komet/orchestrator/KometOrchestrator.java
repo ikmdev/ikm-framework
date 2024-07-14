@@ -6,8 +6,8 @@ import dev.ikm.komet.preferences.Preferences;
 import dev.ikm.komet.progress.CompletionNodeFactory;
 import dev.ikm.komet.progress.ProgressNodeFactory;
 import dev.ikm.orchestration.interfaces.*;
-import dev.ikm.plugin.layer.IkmServiceLoader;
-import dev.ikm.tinkar.common.service.PluggableServiceLoader;
+import dev.ikm.plugin.layer.IkmServiceManager;
+import dev.ikm.tinkar.common.service.PluggableService;
 import dev.ikm.tinkar.common.service.PrimitiveData;
 import dev.ikm.komet.preferences.PreferencesService;
 import dev.ikm.tinkar.common.service.TinkExecutor;
@@ -115,7 +115,7 @@ public class KometOrchestrator extends Application implements Orchestrator {
         state.addListener(this::appStateChangeListener);
 
         TinkExecutor.threadPool().execute(() -> {
-            ServiceLoader<SelectDataService> dataServiceControllers = PluggableServiceLoader.load(SelectDataService.class);
+            ServiceLoader<SelectDataService> dataServiceControllers = PluggableService.load(SelectDataService.class);
 
             dataServiceControllers.findFirst().ifPresentOrElse((SelectDataService selectDataService) -> {
                 try {
@@ -142,9 +142,7 @@ public class KometOrchestrator extends Application implements Orchestrator {
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             LOG.info("Starting shutdown hook");
-                PrimitiveData.save();
-                PrimitiveData.stop();
-
+            PrimitiveData.stop();
             LOG.info("Finished shutdown hook");
         }));
         // setup plugin layers
@@ -162,9 +160,7 @@ public class KometOrchestrator extends Application implements Orchestrator {
         }
         pluginPath.toFile().mkdirs();
         LOG.info("Plugin directory: " + pluginPath.toAbsolutePath());
-        IkmServiceLoader.setPluginDirectory(pluginPath);
-
-        PluggableServiceLoader.setPluggableServiceLoader(IkmServiceLoader.getPluginServiceLoader());
+        IkmServiceManager.setPluginDirectory(pluginPath);
 
         // Access Preferences
         KometPreferences userPreferences = PreferencesService.get().getUserPreferences();
@@ -246,7 +242,7 @@ public class KometOrchestrator extends Application implements Orchestrator {
                     primaryStage.getScene().setRoot(rootBorderPane);
 
                     TinkExecutor.threadPool().execute(() -> {
-                        ServiceLoader<StartDataService> startDataServiceControllers = PluggableServiceLoader.load(StartDataService.class);
+                        ServiceLoader<StartDataService> startDataServiceControllers = PluggableService.load(StartDataService.class);
                         try {
                             startDataServiceControllers.findFirst().get().startDataServiceTask(this).get();
                         } catch (InterruptedException e) {
@@ -262,7 +258,7 @@ public class KometOrchestrator extends Application implements Orchestrator {
                 }
 
                 case RUNNING -> {
-                    ServiceLoader<ChangeSetWriterService> startDataServiceControllers = PluggableServiceLoader.load(ChangeSetWriterService.class);
+                    ServiceLoader<ChangeSetWriterService> startDataServiceControllers = PluggableService.load(ChangeSetWriterService.class);
                     startDataServiceControllers.findFirst().get().getChangeSetFolder();
                     //primaryStage.hide();
                     //launchLandingPage();
@@ -283,7 +279,7 @@ public class KometOrchestrator extends Application implements Orchestrator {
      */
     private void addMenuItems(Window window, MenuBar menuBar) {
         // Add menu items...
-        ServiceLoader<StaticMenuProvider> menuProviders = PluggableServiceLoader.load(StaticMenuProvider.class);
+        ServiceLoader<StaticMenuProvider> menuProviders = PluggableService.load(StaticMenuProvider.class);
         menuProviders.forEach(menuProvider -> {
             ImmutableMultimap<String, MenuItem> menuMap = menuProvider.getMenuItems(this.primaryStage);
             menuMap.forEachKeyValue((menuName, menuItem) -> {
@@ -302,7 +298,7 @@ public class KometOrchestrator extends Application implements Orchestrator {
                 }
             });
         });
-        Menu windowMenu = PluggableServiceLoader.first(WindowMenuProvider.class).getWindowMenu(window);
+        Menu windowMenu = PluggableService.first(WindowMenuProvider.class).getWindowMenu(window);
         menuBar.getMenus().add(windowMenu);
     }
 
