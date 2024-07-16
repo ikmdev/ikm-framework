@@ -96,7 +96,6 @@ public class NewClassicKometWindowTask extends Task<Void> {
         kometScene.getStylesheets()
                 .add(graphicsModule.getClassLoader().getResource(CSS_LOCATION).toString());
 
-        generateWindowMenu(kometRoot);
 
         stage.setScene(kometScene);
 
@@ -131,6 +130,7 @@ public class NewClassicKometWindowTask extends Task<Void> {
 
     private static void finishSetup(Stage stage, KometPreferences windowPreferences) {
         try {
+            generateWindowMenu((BorderPane) stage.getScene().getRoot());
             stage.show();
             windowPreferences.parent().sync();
             stage.toFront();
@@ -255,6 +255,6 @@ public class NewClassicKometWindowTask extends Task<Void> {
         menuBar.getMenus().add(editMenu);
         menuBar.getMenus().add(windowMenu);
         //hBox.getChildren().add(menuBar);
-        Platform.runLater(() -> kometRoot.setTop(menuBar));
+        kometRoot.setTop(menuBar);
     }
 }

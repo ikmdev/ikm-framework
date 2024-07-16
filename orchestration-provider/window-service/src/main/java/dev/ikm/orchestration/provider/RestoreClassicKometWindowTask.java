@@ -5,8 +5,6 @@ import dev.ikm.komet.preferences.KometPreferencesImpl;
 import javafx.concurrent.Task;
 import javafx.stage.Stage;
 
-import static dev.ikm.orchestration.provider.WindowServiceStaticMenuProvider.removeWindow;
-
 public class RestoreClassicKometWindowTask extends Task<Void> {
     final String windowName;
 
@@ -23,7 +21,7 @@ public class RestoreClassicKometWindowTask extends Task<Void> {
         stage.setTitle(windowName);
 
         NewClassicKometWindowTask.loadFromPreferences(stage, windowPreferences);
-        removeWindow(windowName);
+        MenuManager.updateMenus();
         return null;
     }
 }

@@ -19,7 +19,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import org.eclipse.collections.api.multimap.ImmutableMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -273,11 +272,11 @@ public class KometOrchestrator extends Application implements Orchestrator {
 
     /**
      * Adds menu items to the specified menu bar based on the provided StaticMenuProvider
-     * implementation, and then appends a Window menu from the WindowMenuProvider.
+     * implementation, and then appends a Window menu from the WindowMenuService.
      *
      * @param menuBar the menu bar to add the menu items to
      */
-    private void addMenuItems(Window window, MenuBar menuBar) {
+    private void addMenuItems(Stage stage, MenuBar menuBar) {
         // Add menu items...
         ServiceLoader<StaticMenuProvider> menuProviders = PluggableService.load(StaticMenuProvider.class);
         menuProviders.forEach(menuProvider -> {
@@ -298,8 +297,7 @@ public class KometOrchestrator extends Application implements Orchestrator {
                 }
             });
         });
-        Menu windowMenu = PluggableService.first(WindowMenuProvider.class).getWindowMenu(window);
-        menuBar.getMenus().add(windowMenu);
+        PluggableService.first(WindowMenuService.class).addWindowMenu(stage, menuBar);
     }
 
     /**
