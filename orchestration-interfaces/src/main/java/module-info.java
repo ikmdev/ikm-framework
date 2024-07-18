@@ -10,5 +10,8 @@ module dev.ikm.orchestration.interfaces {
     requires org.eclipse.collections.api;
     requires dev.ikm.tinkar.common;
     exports dev.ikm.orchestration.interfaces;
+    exports dev.ikm.orchestration.interfaces.changeset;
+    exports dev.ikm.orchestration.interfaces.menu;
+    exports dev.ikm.orchestration.interfaces.data;
 
 }

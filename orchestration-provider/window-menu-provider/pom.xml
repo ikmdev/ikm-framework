@@ -4,41 +4,46 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>dev.ikm</groupId>
-        <artifactId>ikm-framework</artifactId>
+        <groupId>dev.ikm.orchestration</groupId>
+        <artifactId>orchestration-provider</artifactId>
         <version>3.0.0-SNAPSHOT</version>
     </parent>
-    <packaging>pom</packaging>
 
-    <groupId>dev.ikm.orchestration</groupId>
-    <artifactId>orchestration-provider</artifactId>
+    <groupId>dev.ikm.orchestration.provider</groupId>
+    <artifactId>window-menu-provider</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jgit.version>6.7.0.202309050840-r-r2</jgit.version>
     </properties>
-
     <dependencies>
         <dependency>
+            <groupId>dev.ikm</groupId>
+            <artifactId>orchestration-interfaces</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>dev.ikm.komet</groupId>
-            <artifactId>framework</artifactId>
+            <artifactId>search</artifactId>
             <version>${komet.version}</version>
         </dependency>
         <dependency>
             <groupId>dev.ikm.komet</groupId>
-            <artifactId>progress</artifactId>
+            <artifactId>details</artifactId>
+            <version>${komet.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.ikm.komet</groupId>
+            <artifactId>list</artifactId>
+            <version>${komet.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.ikm.komet</groupId>
+            <artifactId>navigator</artifactId>
             <version>${komet.version}</version>
         </dependency>
     </dependencies>
 
-    <modules>
-        <module>data-services</module>
-        <module>sync-provider</module>
-        <module>stats-menu-provider</module>
-        <module>changeset-writer</module>
-        <module>window-menu-provider</module>
-        <module>general-menu-provider</module>
-    </modules>
 </project>

@@ -1,6 +1,6 @@
 package dev.ikm.orchestration.provider.changeset.writer;
 
-import dev.ikm.orchestration.interfaces.ChangeSetWriterService;
+import dev.ikm.orchestration.interfaces.changeset.ChangeSetWriterService;
 
 /**
  * A provider class for the ChangeSetWriterService.

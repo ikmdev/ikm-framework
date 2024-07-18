@@ -6,6 +6,11 @@ import dev.ikm.komet.preferences.Preferences;
 import dev.ikm.komet.progress.CompletionNodeFactory;
 import dev.ikm.komet.progress.ProgressNodeFactory;
 import dev.ikm.orchestration.interfaces.*;
+import dev.ikm.orchestration.interfaces.changeset.ChangeSetWriterService;
+import dev.ikm.orchestration.interfaces.data.SelectDataService;
+import dev.ikm.orchestration.interfaces.data.StartDataService;
+import dev.ikm.orchestration.interfaces.menu.MenuService;
+import dev.ikm.orchestration.interfaces.menu.WindowMenuService;
 import dev.ikm.plugin.layer.IkmServiceManager;
 import dev.ikm.tinkar.common.service.PluggableService;
 import dev.ikm.tinkar.common.service.PrimitiveData;
@@ -271,14 +276,14 @@ public class KometOrchestrator extends Application implements Orchestrator {
     }
 
     /**
-     * Adds menu items to the specified menu bar based on the provided StaticMenuProvider
+     * Adds menu items to the specified menu bar based on the provided MenuService
      * implementation, and then appends a Window menu from the WindowMenuService.
      *
      * @param menuBar the menu bar to add the menu items to
      */
     private void addMenuItems(Stage stage, MenuBar menuBar) {
         // Add menu items...
-        ServiceLoader<StaticMenuProvider> menuProviders = PluggableService.load(StaticMenuProvider.class);
+        ServiceLoader<MenuService> menuProviders = PluggableService.load(MenuService.class);
         menuProviders.forEach(menuProvider -> {
             ImmutableMultimap<String, MenuItem> menuMap = menuProvider.getMenuItems(this.primaryStage);
             menuMap.forEachKeyValue((menuName, menuItem) -> {

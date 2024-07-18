@@ -1,4 +1,4 @@
-import dev.ikm.orchestration.interfaces.ChangeSetWriterService;
+import dev.ikm.orchestration.interfaces.changeset.ChangeSetWriterService;
 import dev.ikm.orchestration.provider.changeset.writer.ChangeSetWriterProvider;
 
 /**

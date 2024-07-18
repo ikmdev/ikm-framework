@@ -1,6 +1,6 @@
 package dev.ikm.orchestration.provider.changeset.writer;
 
-import dev.ikm.orchestration.interfaces.ChangeSetWriterService;
+import dev.ikm.orchestration.interfaces.changeset.ChangeSetWriterService;
 import dev.ikm.tinkar.common.service.PluggableService;
 import dev.ikm.tinkar.common.service.ServiceKeys;
 import dev.ikm.tinkar.common.service.ServiceProperties;

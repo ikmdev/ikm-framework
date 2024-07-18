@@ -177,12 +177,7 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>dev.ikm.orchestration.provider</groupId>
-                                    <artifactId>select-datasource</artifactId>
-                                    <version>${project.parent.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>dev.ikm.orchestration.provider</groupId>
-                                    <artifactId>start-datasource</artifactId>
+                                    <artifactId>data-services</artifactId>
                                     <version>${project.parent.version}</version>
                                 </artifactItem>
                                 <artifactItem>
@@ -197,7 +192,12 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>dev.ikm.orchestration.provider</groupId>
-                                    <artifactId>stats-provider</artifactId>
+                                    <artifactId>stats-menu-provider</artifactId>
+                                    <version>${project.parent.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>dev.ikm.orchestration.provider</groupId>
+                                    <artifactId>general-menu-provider</artifactId>
                                     <version>${project.parent.version}</version>
                                 </artifactItem>
                             </artifactItems>
