@@ -15,8 +15,8 @@
         <log4j-slf4j2.version>3.0.0-beta2</log4j-slf4j2.version>
         <maven.compiler.release>21</maven.compiler.release>
         <slf4j.version>2.0.13</slf4j.version>
-        <komet.version>1.28.0-IKDT-378-GCI-Updates-SNAPSHOT</komet.version>
-        <tinkar.version>1.50.0-IKDT-378-GCI-Updates-SNAPSHOT</tinkar.version>
+        <komet.version>1.32.0-SNAPSHOT</komet.version>
+        <tinkar.version>1.57.0-SNAPSHOT</tinkar.version>
     </properties>
     <build>
         <plugins>

@@ -14,20 +14,12 @@
     <name>IKM Plugin Layer</name>
 
     <properties>
-        <directory.watcher.version>0.18.0-r4</directory.watcher.version>
         <jna.version>5.14.0</jna.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
     </properties>
 
     <dependencies>
-        <!-- TODO Not sure if directory-watcher and jna should remain. It uses some platform specific and unsupported APIs,
-            and it may not be worth the complexities they introduce.-->
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna</artifactId>
-            <version>${jna.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
