@@ -4,33 +4,41 @@ import dev.ikm.komet.framework.events.EvtBus;
 import dev.ikm.komet.framework.events.EvtBusFactory;
 import dev.ikm.komet.framework.preferences.PrefX;
 import dev.ikm.komet.kview.events.CreateJournalEvent;
+import dev.ikm.komet.preferences.JournalWindowSettings;
 import dev.ikm.komet.preferences.KometPreferences;
 import dev.ikm.komet.preferences.KometPreferencesImpl;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.geometry.HPos;
+import javafx.geometry.VPos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
 import static dev.ikm.komet.kview.events.CreateJournalEvent.CREATE_JOURNAL;
 import static dev.ikm.komet.kview.events.EventTopics.JOURNAL_TOPIC;
 import static dev.ikm.orchestration.interfaces.menu.WindowMenuService.getMenuBar;
+import static dev.ikm.tinkar.common.util.time.DateTimeUtil.SHORT_MIN_FORMATTER;
 
 /**
  * Manages the application window based on active stages.
@@ -98,7 +106,31 @@ public class WindowMenuManager implements ListChangeListener<Window> {
 
                         getMenuBar(stage.getScene().getRoot()).ifPresentOrElse(
                                 menuBar -> managedMenus.put(stage, menuBar),
-                                () -> LOG.info("MenuBar not found. "));
+                                () -> {
+                                    // wrap stage in a border pane, and add menuBar...
+                                    BorderPane borderPane = new BorderPane();
+                                    MenuBar menuBar = new MenuBar();
+                                    borderPane.setTop(menuBar);
+
+                                    Parent journalPane = stage.getScene().getRoot();
+                                    if (journalPane instanceof BorderPane journalBorderPane) {
+                                        journalBorderPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+                                        //borderPane.setBorder(new Border(new BorderStroke(Color.RED,
+                                        //    BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+                                    }
+
+                                    GridPane gridPane = new GridPane();
+                                    GridPane.setConstraints(journalPane, 0,0,
+                                            1, 1,
+                                            HPos.LEFT, VPos.TOP,
+                                            Priority.ALWAYS, Priority.ALWAYS);
+                                    gridPane.getChildren().add(journalPane);
+
+
+                                    borderPane.setCenter(gridPane);
+                                    stage.getScene().setRoot(borderPane);
+                                    managedMenus.put(stage, menuBar);
+                                });
                         openStages.add(stage);
                         updateMenus();
                     }
@@ -139,7 +171,19 @@ public class WindowMenuManager implements ListChangeListener<Window> {
         newJournalMenuItem.setOnAction(event -> {
             EvtBus kViewEventBus = EvtBusFactory.getInstance(EvtBus.class);
             // From Carl: fire create journal event... AND this should be the ONLY place it comes from besides the menu
-            kViewEventBus.publish(JOURNAL_TOPIC, new CreateJournalEvent(newJournalMenuItem, CREATE_JOURNAL, PrefX.create()));
+            PrefX prefX = PrefX.create();
+
+            String windowTitle = "Journal " + LocalDateTime.now().format(SHORT_MIN_FORMATTER);
+            List<String> savedWindows = appPreferences.getList(WindowServiceKeys.SAVED_WINDOWS);
+
+            int index = 97;
+            while (savedWindows.contains(windowTitle)) {
+                windowTitle = "Journal " + LocalDateTime.now().format(SHORT_MIN_FORMATTER) + Character.toString(index++);
+            }
+            savedWindows.add(windowTitle);
+
+            prefX.setValue(JournalWindowSettings.JOURNAL_TITLE, windowTitle);
+            kViewEventBus.publish(JOURNAL_TOPIC, new CreateJournalEvent(newJournalMenuItem, CREATE_JOURNAL, prefX));
         });
         windowMenu.getItems().add(newJournalMenuItem);
 
