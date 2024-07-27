@@ -1,5 +1,9 @@
 package dev.ikm.orchestration.provider.window.menu;
 
+import dev.ikm.komet.framework.events.EvtBus;
+import dev.ikm.komet.framework.events.EvtBusFactory;
+import dev.ikm.komet.framework.preferences.PrefX;
+import dev.ikm.komet.kview.events.CreateJournalEvent;
 import dev.ikm.komet.preferences.KometPreferences;
 import dev.ikm.komet.preferences.KometPreferencesImpl;
 import javafx.application.Platform;
@@ -20,26 +24,30 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
+import static dev.ikm.komet.kview.events.CreateJournalEvent.CREATE_JOURNAL;
+import static dev.ikm.komet.kview.events.EventTopics.JOURNAL_TOPIC;
 import static dev.ikm.orchestration.interfaces.menu.WindowMenuService.getMenuBar;
 
 /**
  * Manages the application window based on active stages.
  * Implements the ListChangeListener interface to listen for changes in the list of active stages.
  */
-public class MenuManager implements ListChangeListener<Window> {
-    private static final Logger LOG = LoggerFactory.getLogger(MenuManager.class);
-    private static final MenuManager singleton = new MenuManager();
+public class WindowMenuManager implements ListChangeListener<Window> {
+    private static final Logger LOG = LoggerFactory.getLogger(WindowMenuManager.class);
+    private static final WindowMenuManager singleton = new WindowMenuManager();
     static final ConcurrentHashMap<Stage, MenuBar> managedMenus = new ConcurrentHashMap<Stage, MenuBar>();
     static final CopyOnWriteArrayList<Stage> openStages = new CopyOnWriteArrayList<Stage>();
 
-    private MenuManager() {
+    private WindowMenuManager() {
         Window.getWindows().addListener(this);
     }
 
     /**
-     * Adds a stage and its associated menu bar to the MenuManager. This allows the MenuManager
+     * Adds a stage and its associated menu bar to the WindowMenuManager. This allows the WindowMenuManager
      * to update the menus whenever a new stage is added.
      *
      * @param stage The Stage to be added.
@@ -126,8 +134,15 @@ public class MenuManager implements ListChangeListener<Window> {
      */
     private static void addWindowMenuItems(Stage windowStage, Menu windowMenu) {
         windowMenu.getItems().clear();
-        windowMenu.getItems().clear();
         KometPreferences appPreferences = KometPreferencesImpl.getConfigurationRootPreferences();
+        MenuItem newJournalMenuItem = new MenuItem("New Journal Window");
+        newJournalMenuItem.setOnAction(event -> {
+            EvtBus kViewEventBus = EvtBusFactory.getInstance(EvtBus.class);
+            // From Carl: fire create journal event... AND this should be the ONLY place it comes from besides the menu
+            kViewEventBus.publish(JOURNAL_TOPIC, new CreateJournalEvent(newJournalMenuItem, CREATE_JOURNAL, PrefX.create()));
+        });
+        windowMenu.getItems().add(newJournalMenuItem);
+
         MenuItem newClassicKometWindow = new MenuItem("New Classic Komet Window");
         newClassicKometWindow.setOnAction(event -> Platform.runLater(new NewClassicKometWindowTask()));
         windowMenu.getItems().add(newClassicKometWindow);
@@ -135,9 +150,11 @@ public class MenuManager implements ListChangeListener<Window> {
         windowMenu.getItems().add(new SeparatorMenuItem());
 
         List<String> savedWindows = appPreferences.getList(WindowServiceKeys.SAVED_WINDOWS);
+        LongAdder restorableWindowCount = new LongAdder();
         savedWindows.stream().sorted(Collections.reverseOrder()).forEach(windowName -> {
             // Don't add those that are already open...
             if (openStages.stream().noneMatch(stage -> stage.getTitle().equals(windowName))) {
+                restorableWindowCount.increment();
                 Menu actOnWindow = new Menu(windowName);
                 windowMenu.getItems().add(actOnWindow);
 
@@ -152,7 +169,9 @@ public class MenuManager implements ListChangeListener<Window> {
                 actOnWindow.getItems().add(forgetWindowMenuItem);
             }
         });
-        windowMenu.getItems().add(new SeparatorMenuItem());
+        if (restorableWindowCount.intValue() > 0) {
+            windowMenu.getItems().add(new SeparatorMenuItem());
+        }
         MenuItem nextWindow = new MenuItem("Cycle through windows");
         KeyCombination nextWindowKeyCombo = new KeyCodeCombination(KeyCode.BACK_QUOTE, KeyCombination.SHORTCUT_DOWN);
         nextWindow.setAccelerator(nextWindowKeyCombo);

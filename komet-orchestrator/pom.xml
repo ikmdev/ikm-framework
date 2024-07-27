@@ -7,7 +7,7 @@
     <parent>
         <groupId>dev.ikm</groupId>
         <artifactId>ikm-framework</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>komet-orchestrator</artifactId>
@@ -15,7 +15,7 @@
     <name>Komet µsOrchestrator</name>
 
     <properties>
-        <jgit.version>6.10.0.202406032230-r-r1-SNAPSHOT</jgit.version>
+        <jgit.version>6.10.0.202406032230-r-r4</jgit.version>
         <junit.version>5.10.0</junit.version>
         <javafx.version>21.0.1</javafx.version>
         <lucene-core.version>9.7.0</lucene-core.version>
@@ -23,11 +23,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -74,6 +69,11 @@
             <version>${komet.version}</version>
         </dependency>
         <dependency>
+            <groupId>dev.ikm.komet</groupId>
+            <artifactId>kview</artifactId>
+            <version>${komet.version}</version>
+        </dependency>
+        <dependency>
             <groupId>dev.ikm</groupId>
             <artifactId>plugin-layer</artifactId>
             <version>${project.parent.version}</version>
@@ -92,9 +92,10 @@
         <dependency>
             <groupId>dev.ikm</groupId>
             <artifactId>orchestration-interfaces</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
+            <version>3.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -261,7 +262,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>dev.ikm.orchestration.provider</groupId>
-                                    <artifactId>sync-service</artifactId>
+                                    <artifactId>sync-provider</artifactId>
                                     <version>${project.parent.version}</version>
                                 </artifactItem>
                                 <artifactItem>
@@ -283,7 +284,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>dev.ikm.orchestration.provider</groupId>
-                                    <artifactId>window-service</artifactId>
+                                    <artifactId>window-menu-provider</artifactId>
                                     <version>${project.parent.version}</version>
                                 </artifactItem>
                                 <artifactItem>
@@ -292,7 +293,7 @@
                                     <version>${komet.version}</version>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/plugins/window-service</outputDirectory>
+                            <outputDirectory>${project.build.directory}/plugins/window-menu-provider</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>

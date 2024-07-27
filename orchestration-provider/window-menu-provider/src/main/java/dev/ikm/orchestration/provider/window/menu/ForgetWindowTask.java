@@ -26,7 +26,7 @@ public class ForgetWindowTask extends Task<Void> {
         savedWindows.remove(this.windowName);
         appPreferences.putList(WindowServiceKeys.SAVED_WINDOWS, savedWindows);
         appPreferences.flush();
-        Platform.runLater(() -> MenuManager.updateMenus());
+        Platform.runLater(() -> WindowMenuManager.updateMenus());
         return null;
     }
 

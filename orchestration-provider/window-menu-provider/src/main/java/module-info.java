@@ -16,6 +16,7 @@ module dev.ikm.orchestration.provider.window.service {
     requires org.eclipse.collections;
     requires org.eclipse.collections.api;
     requires org.slf4j;
+    requires dev.ikm.komet.kview;
 
     provides WindowMenuService with WindowMenuProvider;
 }

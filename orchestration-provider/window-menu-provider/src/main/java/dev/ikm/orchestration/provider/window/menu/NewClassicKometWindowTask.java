@@ -150,7 +150,6 @@ public class NewClassicKometWindowTask extends Task<Void> {
                 Object[] parameters = new Object[]{windowView, itemPreferences};
                 WindowComponent windowComponent = (WindowComponent) Encodable.decode(objectClass, annotationClass, parameters);
                 nodeConsumer.accept(windowComponent.getNode());
-
             } catch (Exception e) {
                 AlertStreams.getRoot().dispatch(AlertObject.makeError(e));
             }
@@ -158,7 +157,6 @@ public class NewClassicKometWindowTask extends Task<Void> {
     }
 
     private static ImmutableList<DetachableTab> makeDefaultLeftTabs(ObservableViewNoOverride windowView) {
-
         GraphNavigatorNodeFactory navigatorNodeFactory = new GraphNavigatorNodeFactory();
         KometNode navigatorNode1 = navigatorNodeFactory.create(windowView,
                 ActivityStreams.NAVIGATION, ActivityStreamOption.PUBLISH.keyForOption(), AlertStreams.ROOT_ALERT_STREAM_KEY);

@@ -14,7 +14,7 @@ public class WindowMenuProvider implements WindowMenuService {
 
     /**
      * Adds a "Window" menu to the given menu bar and associates it with the specified stage.
-     * The menu is added to the existing menu bar and the association is registered with the MenuManager
+     * The menu is added to the existing menu bar and the association is registered with the WindowMenuManager
      * to allow for menu updates when the window options change.
      *
      * @param stage    The stage to associate with the "Window" menu.
@@ -23,7 +23,7 @@ public class WindowMenuProvider implements WindowMenuService {
     @Override
     public void addWindowMenu(Stage stage, MenuBar menuBar) {
         menuBar.getMenus().add(new Menu("Window"));
-        MenuManager.addStage(stage, menuBar);
+        WindowMenuManager.addStage(stage, menuBar);
     }
 
 }

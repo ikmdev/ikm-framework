@@ -21,7 +21,7 @@ public class RestoreClassicKometWindowTask extends Task<Void> {
         stage.setTitle(windowName);
 
         NewClassicKometWindowTask.loadFromPreferences(stage, windowPreferences);
-        MenuManager.updateMenus();
+        WindowMenuManager.updateMenus();
         return null;
     }
 }
