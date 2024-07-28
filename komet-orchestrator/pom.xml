@@ -287,11 +287,6 @@
                                     <artifactId>window-menu-provider</artifactId>
                                     <version>${project.parent.version}</version>
                                 </artifactItem>
-                                <artifactItem>
-                                    <groupId>dev.ikm.komet</groupId>
-                                    <artifactId>search</artifactId>
-                                    <version>${komet.version}</version>
-                                </artifactItem>
                             </artifactItems>
                             <outputDirectory>${project.build.directory}/plugins/window-menu-provider</outputDirectory>
                         </configuration>

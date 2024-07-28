@@ -18,9 +18,11 @@ import dev.ikm.komet.preferences.KometPreferencesImpl;
 import dev.ikm.komet.progress.CompletionNodeFactory;
 import dev.ikm.komet.progress.ProgressNodeFactory;
 import dev.ikm.komet.table.TableNodeFactory;
+import dev.ikm.orchestration.interfaces.OrchestrationService;
 import dev.ikm.tinkar.common.alert.AlertObject;
 import dev.ikm.tinkar.common.alert.AlertStreams;
 import dev.ikm.tinkar.common.binary.Encodable;
+import dev.ikm.tinkar.common.service.PluggableService;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
@@ -157,7 +159,7 @@ public class NewClassicKometWindowTask extends Task<Void> {
      */
     private static void finishSetup(Stage stage, KometPreferences windowPreferences) {
         try {
-            generateWindowMenu((BorderPane) stage.getScene().getRoot());
+            generateWindowMenu(stage, (BorderPane) stage.getScene().getRoot());
             stage.show();
             windowPreferences.parent().sync();
             stage.toFront();
@@ -278,39 +280,15 @@ public class NewClassicKometWindowTask extends Task<Void> {
         return Lists.immutable.of(newSearchTab, progressTab, completionTab);
     }
 
-
     /**
      * Generates the window menu for the Komet application.
      *
      * @param kometRoot the root BorderPane of the Komet window
-     * @TODO use the menu generation services...
+     * 
      */
-    private static void generateWindowMenu(BorderPane kometRoot) {
+    private static void generateWindowMenu(Stage stage, BorderPane kometRoot) {
         MenuBar menuBar = new MenuBar();
-        Menu fileMenu = new Menu("File");
-
-
-        MenuItem menuItemQuit = new MenuItem("Quit");
-        KeyCombination quitKeyCombo = new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN);
-        menuItemQuit.setOnAction(actionEvent -> Platform.exit());
-        menuItemQuit.setAccelerator(quitKeyCombo);
-        fileMenu.getItems().add(menuItemQuit);
-
-        Menu editMenu = new Menu("Edit");
-
-        Menu windowMenu = new Menu("Window");
-        MenuItem minimizeWindow = new MenuItem("Minimize");
-        KeyCombination minimizeKeyCombo = new KeyCodeCombination(KeyCode.M, KeyCombination.CONTROL_DOWN);
-        minimizeWindow.setOnAction(event -> {
-            Stage obj = (Stage) kometRoot.getScene().getWindow();
-            obj.setIconified(true);
-        });
-        minimizeWindow.setAccelerator(minimizeKeyCombo);
-        windowMenu.getItems().add(minimizeWindow);
-
-        menuBar.getMenus().add(fileMenu);
-        menuBar.getMenus().add(editMenu);
-        menuBar.getMenus().add(windowMenu);
+        PluggableService.first(OrchestrationService.class).addMenuItems(stage, menuBar);
         kometRoot.setTop(menuBar);
     }
 }
