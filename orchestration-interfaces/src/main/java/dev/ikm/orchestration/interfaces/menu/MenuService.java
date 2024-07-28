@@ -22,6 +22,12 @@ public interface MenuService {
 
     ImmutableMultimap<String, MenuItem> getMenuItems(Window window);
 
+    /**
+     * Adds menu items to a MenuBar based on services implementing the MenuService interface s.
+     *
+     * @param menuBar the MenuBar to which the menu items will be added
+     * @param window the Window object for which the menu items will be obtained
+     */
     default void addMenuItems(MenuBar menuBar, Window window) {
         ImmutableMultimap<String, MenuItem> menuItems = getMenuItems(window);
         menuItems.forEachKeyValue((menuName, menuItem) -> {

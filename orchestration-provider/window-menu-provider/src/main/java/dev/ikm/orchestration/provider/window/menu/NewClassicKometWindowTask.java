@@ -52,10 +52,21 @@ import static dev.ikm.komet.framework.window.WindowSettings.Keys.*;
 import static dev.ikm.orchestration.interfaces.CssService.CSS_LOCATION;
 import static dev.ikm.tinkar.common.util.time.DateTimeUtil.SHORT_MIN_FORMATTER;
 
+/**
+ * The NewClassicKometWindowTask class is a Task that creates and initializes a new Komet window.
+ * It extends the Task<Void> class and overrides the call() method to define the task's logic.
+ * This class is responsible for creating a new Komet window with a unique title and loading the window's content from preferences.
+ */
 public class NewClassicKometWindowTask extends Task<Void> {
     private static final Logger LOG = LoggerFactory.getLogger(NewClassicKometWindowTask.class);
 
 
+    /**
+     * Executes the method call to create and configure a new Komet window.
+     * Returns void.
+     * @return null
+     * @throws Exception if an error occurs during the execution of the method
+     */
     @Override
     protected Void call() throws Exception {
         KometPreferences appPreferences = KometPreferencesImpl.getConfigurationRootPreferences();
@@ -79,6 +90,15 @@ public class NewClassicKometWindowTask extends Task<Void> {
         return null;
     }
 
+    /**
+     * Loads the Komet window from the preferences and sets it up on the specified stage.
+     * This method throws IOException and BackingStoreException.
+     *
+     * @param stage            the stage on which the Komet window will be set up
+     * @param windowPreferences the preferences from which to load the Komet window
+     * @throws IOException          if an error occurs while loading the Komet window
+     * @throws BackingStoreException if an error occurs while accessing the preferences
+     */
     public static void loadFromPreferences(Stage stage, KometPreferences windowPreferences) throws IOException, BackingStoreException {
         Module graphicsModule = ModuleLayer.boot()
                 .findModule("dev.ikm.komet.framework")
@@ -128,6 +148,13 @@ public class NewClassicKometWindowTask extends Task<Void> {
         finishSetup(stage, windowPreferences);
     }
 
+    /**
+     * Finishes the setup of the Komet window on the specified stage.
+     *
+     * @param stage              the stage on which the Komet window is set up
+     * @param windowPreferences  the preferences from which to load the Komet window
+     * @throws RuntimeException if an error occurs during the setup
+     */
     private static void finishSetup(Stage stage, KometPreferences windowPreferences) {
         try {
             generateWindowMenu((BorderPane) stage.getScene().getRoot());
@@ -140,6 +167,14 @@ public class NewClassicKometWindowTask extends Task<Void> {
     }
 
 
+    /**
+     * Restores a tab from the given preferences node and adds the corresponding node to the consumer.
+     *
+     * @param windowPreferences   the parent preferences node
+     * @param tabPreferenceNodeName   the name of the tab preference node
+     * @param windowView   the window view
+     * @param nodeConsumer   the consumer to add the node to
+     */
     private static void restoreTab(KometPreferences windowPreferences, String tabPreferenceNodeName, ObservableViewNoOverride windowView, Consumer<Node> nodeConsumer) {
         LOG.info("Restoring from: " + tabPreferenceNodeName);
         KometPreferences itemPreferences = windowPreferences.node(KOMET_NODES + tabPreferenceNodeName);
@@ -156,6 +191,12 @@ public class NewClassicKometWindowTask extends Task<Void> {
         });
     }
 
+    /**
+     * Creates the default left tabs for the Komet window.
+     *
+     * @param windowView the ObservableViewNoOverride object representing the Komet window view
+     * @return an immutable list of DetachableTab objects representing the default left tabs
+     */
     private static ImmutableList<DetachableTab> makeDefaultLeftTabs(ObservableViewNoOverride windowView) {
         GraphNavigatorNodeFactory navigatorNodeFactory = new GraphNavigatorNodeFactory();
         KometNode navigatorNode1 = navigatorNodeFactory.create(windowView,
@@ -173,6 +214,12 @@ public class NewClassicKometWindowTask extends Task<Void> {
         return Lists.immutable.of(navigatorNode1Tab, patternNavigatorNode1Tab);
     }
 
+    /**
+     * Creates the default center tabs for the Komet window.
+     *
+     * @param windowView the ObservableViewNoOverride object representing the Komet window view
+     * @return an immutable list of DetachableTab objects representing the default center tabs
+     */
     private static ImmutableList<DetachableTab> makeDefaultCenterTabs(ObservableViewNoOverride windowView) {
 
         DetailsNodeFactory detailsNodeFactory = new DetailsNodeFactory();
@@ -205,6 +252,12 @@ public class NewClassicKometWindowTask extends Task<Void> {
         return Lists.immutable.of(detailsNode1Tab, detailsNode2Tab, detailsNode3Tab, listNodeNodeTab, tableNodeTab);
     }
 
+    /**
+     * Creates the default right tabs for the Komet window.
+     *
+     * @param windowView the ObservableViewNoOverride object representing the Komet window view
+     * @return an immutable list of DetachableTab objects representing the default right tabs
+     */
     private static ImmutableList<DetachableTab> makeDefaultRightTabs(ObservableViewNoOverride windowView) {
 
         SearchNodeFactory searchNodeFactory = new SearchNodeFactory();
@@ -226,6 +279,12 @@ public class NewClassicKometWindowTask extends Task<Void> {
     }
 
 
+    /**
+     * Generates the window menu for the Komet application.
+     *
+     * @param kometRoot the root BorderPane of the Komet window
+     * @TODO use the menu generation services...
+     */
     private static void generateWindowMenu(BorderPane kometRoot) {
         MenuBar menuBar = new MenuBar();
         Menu fileMenu = new Menu("File");

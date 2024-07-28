@@ -16,7 +16,6 @@ import dev.ikm.komet.navigator.graph.GraphNavigatorNodeFactory;
 import dev.ikm.komet.preferences.JournalWindowSettings;
 import dev.ikm.komet.preferences.KometPreferences;
 import dev.ikm.komet.preferences.KometPreferencesImpl;
-import dev.ikm.komet.preferences.PreferencesService;
 import dev.ikm.komet.search.SearchNodeFactory;
 import dev.ikm.tinkar.common.alert.AlertStreams;
 import javafx.concurrent.Task;
@@ -47,6 +46,9 @@ import static dev.ikm.komet.preferences.JournalWindowSettings.*;
 import static dev.ikm.orchestration.interfaces.CssService.CSS_LOCATION;
 import static dev.ikm.tinkar.common.util.time.DateTimeUtil.SHORT_MIN_FORMATTER;
 
+/**
+ * Represents a task that is responsible for launching a new journal view window.
+ */
 public class NewJournalViewTask extends Task<Void> {
     private static final Logger LOG = LoggerFactory.getLogger(NewJournalViewTask.class);
 
@@ -55,6 +57,12 @@ public class NewJournalViewTask extends Task<Void> {
     private final List<JournalController> journalControllersList;
     private final Module graphicsModule;
 
+    /**
+     * Initializes a new instance of the NewJournalViewTask class.
+     *
+     * @param prefX                  The PrefX object.
+     * @param journalControllersList The list of JournalController objects.
+     */
     public NewJournalViewTask(PrefX prefX, List<JournalController> journalControllersList) {
         this.prefX = prefX;
         this.journalControllersList = journalControllersList;
@@ -65,6 +73,14 @@ public class NewJournalViewTask extends Task<Void> {
                 .orElseThrow();
     }
 
+    /**
+     * Performs a series of actions to create a new journal view window.
+     * If the journal title is not set in the preferences, generates a new title based on the current timestamp and adds it to the list of saved windows.
+     * Launches the journal view window with the specified settings.
+     *
+     * @return null
+     * @throws Exception if an error occurs during the process
+     */
     @Override
     protected Void call() throws Exception {
         KometPreferences appPreferences = KometPreferencesImpl.getConfigurationRootPreferences();
@@ -164,6 +180,9 @@ public class NewJournalViewTask extends Task<Void> {
         journalStageWindow.show();
     }
 
+    /**
+     * Saves the journal windows to preferences.
+     */
     private void saveJournalWindowsToPreferences() {
         KometPreferences appPreferences = KometPreferencesImpl.getConfigurationRootPreferences();
         KometPreferences journalPreferences = appPreferences.node(JOURNAL_WINDOW);
