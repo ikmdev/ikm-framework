@@ -1,4 +1,6 @@
+import dev.ikm.orchestration.interfaces.journal.NewJournalService;
 import dev.ikm.orchestration.interfaces.menu.WindowMenuService;
+import dev.ikm.orchestration.provider.window.menu.NewJournalProvider;
 import dev.ikm.orchestration.provider.window.menu.WindowMenuProvider;
 
 module dev.ikm.orchestration.provider.window.service {
@@ -19,4 +21,5 @@ module dev.ikm.orchestration.provider.window.service {
     requires dev.ikm.komet.kview;
 
     provides WindowMenuService with WindowMenuProvider;
+    provides NewJournalService with NewJournalProvider;
 }

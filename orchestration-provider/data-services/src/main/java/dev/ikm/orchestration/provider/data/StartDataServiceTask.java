@@ -15,7 +15,7 @@
  */
 package dev.ikm.orchestration.provider.data;
 
-import dev.ikm.orchestration.interfaces.Orchestrator;
+import dev.ikm.orchestration.interfaces.OrchestrationService;
 import dev.ikm.tinkar.common.service.PrimitiveData;
 import dev.ikm.tinkar.common.service.TrackingCallable;
 import javafx.application.Platform;
@@ -23,26 +23,26 @@ import javafx.application.Platform;
 import static dev.ikm.orchestration.interfaces.Lifecycle.RUNNING;
 
 /**
- * The StartDataServiceTask class represents a task for starting a data service in an orchestrator.
+ * The StartDataServiceTask class represents a task for starting a data service in an orchestrationService.
  * It extends the TrackingCallable class and overrides the compute() method to perform the task.
  */
 public class StartDataServiceTask extends TrackingCallable<Void> {
-    final Orchestrator orchestrator;
+    final OrchestrationService orchestrationService;
 
     /**
-     * The StartDataServiceTask class represents a task for starting a data service in an orchestrator.
+     * The StartDataServiceTask class represents a task for starting a data service in an orchestrationService.
      * It extends the TrackingCallable class and overrides the compute() method to perform the task.
      */
-    public StartDataServiceTask(Orchestrator orchestrator) {
+    public StartDataServiceTask(OrchestrationService orchestrationService) {
         super(false, true);
-        this.orchestrator = orchestrator;
+        this.orchestrationService = orchestrationService;
         updateTitle("Starting Data Service");
         updateMessage("Executing " + PrimitiveData.getController().controllerName());
         updateProgress(-1, -1);
     }
 
     /**
-     * Computes the task for starting a data service in an orchestrator.
+     * Computes the task for starting a data service in an orchestrationService.
      * This method is called when the task is executed.
      *
      * @return null
@@ -52,7 +52,7 @@ public class StartDataServiceTask extends TrackingCallable<Void> {
     protected Void compute() throws Exception {
         try {
             PrimitiveData.start();
-            Platform.runLater(() -> this.orchestrator.lifecycleProperty().set(RUNNING));
+            Platform.runLater(() -> this.orchestrationService.lifecycleProperty().set(RUNNING));
             return null;
         } catch (Throwable ex) {
             ex.printStackTrace();

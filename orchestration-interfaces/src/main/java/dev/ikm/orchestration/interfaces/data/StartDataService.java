@@ -1,6 +1,6 @@
 package dev.ikm.orchestration.interfaces.data;
 
-import dev.ikm.orchestration.interfaces.Orchestrator;
+import dev.ikm.orchestration.interfaces.OrchestrationService;
 
 import java.util.concurrent.Future;
 
@@ -15,5 +15,5 @@ public interface StartDataService {
      * @param orchestrator the orchestrator where the data service task will be started
      * @return a Future object representing the completion of the task
      */
-    Future<Void> startDataServiceTask(Orchestrator orchestrator);
+    Future<Void> startDataServiceTask(OrchestrationService orchestrator);
 }

@@ -9,9 +9,12 @@ module dev.ikm.orchestration.interfaces {
     requires javafx.controls;
     requires org.eclipse.collections.api;
     requires dev.ikm.tinkar.common;
+    requires dev.ikm.komet.framework;
+    requires dev.ikm.komet.kview;
     exports dev.ikm.orchestration.interfaces;
     exports dev.ikm.orchestration.interfaces.changeset;
     exports dev.ikm.orchestration.interfaces.menu;
     exports dev.ikm.orchestration.interfaces.data;
+    exports dev.ikm.orchestration.interfaces.journal;
 
 }

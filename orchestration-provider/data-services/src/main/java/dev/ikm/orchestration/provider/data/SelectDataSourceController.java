@@ -22,7 +22,7 @@ package dev.ikm.orchestration.provider.data;
 
 import dev.ikm.komet.framework.propsheet.KometPropertyEditorFactory;
 import dev.ikm.komet.framework.propsheet.SheetItem;
-import dev.ikm.orchestration.interfaces.Orchestrator;
+import dev.ikm.orchestration.interfaces.OrchestrationService;
 import dev.ikm.tinkar.common.service.DataServiceController;
 import dev.ikm.tinkar.common.service.DataServiceProperty;
 import dev.ikm.tinkar.common.service.DataUriOption;
@@ -66,7 +66,7 @@ public class SelectDataSourceController {
 
     private File workingFolder = new File(System.getProperty("user.dir"), "target");
 
-    private final Orchestrator orchestrator;
+    private final OrchestrationService orchestrator;
 
     private Map<DataServiceProperty, SimpleStringProperty> dataServicePropertyStringMap = new HashMap<>();
 
@@ -104,7 +104,7 @@ public class SelectDataSourceController {
     /**
      * The SelectDataSourceController class represents a controller for selecting a data source provider.
      */
-    public SelectDataSourceController(Orchestrator orchestrator) {
+    public SelectDataSourceController(OrchestrationService orchestrator) {
         this.orchestrator = orchestrator;
     }
 
@@ -201,7 +201,7 @@ public class SelectDataSourceController {
     /**
      * This method is called when the OK button is pressed in the UI.
      * It performs the necessary actions to save the data service properties,
-     * update the data source selection, and set the lifecycle property of the orchestrator.
+     * update the data source selection, and set the lifecycle property of the orchestrationService.
      *
      * @param event the action event triggered by the OK button
      */

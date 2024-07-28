@@ -1,5 +1,7 @@
 package dev.ikm.orchestration.interfaces.menu;
 
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Window;
 import org.eclipse.collections.api.multimap.ImmutableMultimap;
@@ -20,8 +22,23 @@ public interface MenuService {
 
     ImmutableMultimap<String, MenuItem> getMenuItems(Window window);
 
-    default void addMenuItems(Window window) {
-
+    default void addMenuItems(MenuBar menuBar, Window window) {
+        ImmutableMultimap<String, MenuItem> menuItems = getMenuItems(window);
+        menuItems.forEachKeyValue((menuName, menuItem) -> {
+            boolean found = false;
+            for (Menu menu: menuBar.getMenus()) {
+                if (menu.getText().equals(menuName)) {
+                    menu.getItems().add(menuItem);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                Menu menu = new Menu(menuName);
+                menu.getItems().add(menuItem);
+                menuBar.getMenus().add(menu);
+            }
+        });
     }
 
 }

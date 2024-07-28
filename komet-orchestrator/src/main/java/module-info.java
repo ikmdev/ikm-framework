@@ -1,4 +1,6 @@
 import dev.ikm.komet.orchestrator.KometOrchestrator;
+import dev.ikm.komet.orchestrator.OrchestrationProvider;
+import dev.ikm.orchestration.interfaces.OrchestrationService;
 import dev.ikm.orchestration.interfaces.StatusReportService;
 import dev.ikm.tinkar.common.service.PluggableService;
 import org.slf4j.spi.SLF4JServiceProvider;
@@ -26,6 +28,7 @@ module dev.ikm.komet.orchestrator {
     uses SLF4JServiceProvider;
 
     provides StatusReportService with KometOrchestrator;
+    provides OrchestrationService with OrchestrationProvider;
 
     opens dev.ikm.komet.orchestrator to javafx.fxml;
     exports dev.ikm.komet.orchestrator;

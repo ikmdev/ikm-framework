@@ -1,7 +1,7 @@
 package dev.ikm.orchestration.provider.data;
 
 import dev.ikm.komet.framework.ScreenInfo;
-import dev.ikm.orchestration.interfaces.Orchestrator;
+import dev.ikm.orchestration.interfaces.OrchestrationService;
 import dev.ikm.orchestration.interfaces.data.SelectDataService;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -24,11 +24,11 @@ public class SelectDataServiceProvider implements SelectDataService {
     /**
      * Executes the {@code SelectDataServiceProviderTask} asynchronously to perform the select data task.
      *
-     * @param orchestrator the orchestrator object representing the application
+     * @param orchestrator the orchestrationService object representing the application
      * @return a {@code Future} object that will be completed with a {@code null} value when the task is done
      */
     @Override
-    public Future<Void> selectDataServiceTask(Orchestrator orchestrator) {
+    public Future<Void> selectDataServiceTask(OrchestrationService orchestrator) {
         SelectDataServiceProviderTask theTask = new SelectDataServiceProviderTask(orchestrator);
         Platform.runLater(theTask);
         return theTask;
@@ -39,9 +39,9 @@ public class SelectDataServiceProvider implements SelectDataService {
      * This task is executed asynchronously and updates the user interface accordingly.
      */
     private class SelectDataServiceProviderTask extends Task<Void> {
-        private final Orchestrator orchestrator;
-        public SelectDataServiceProviderTask(Orchestrator orchestrator) {
-            this.orchestrator = orchestrator;
+        private final OrchestrationService orchestrationService;
+        public SelectDataServiceProviderTask(OrchestrationService orchestrationService) {
+            this.orchestrationService = orchestrationService;
         }
 
         /**
@@ -53,7 +53,7 @@ public class SelectDataServiceProvider implements SelectDataService {
          */
         @Override
         protected Void call() throws Exception {
-            SelectDataSourceController selectDataSourceController = new SelectDataSourceController(orchestrator);
+            SelectDataSourceController selectDataSourceController = new SelectDataSourceController(orchestrationService);
             FXMLLoader sourceLoader = new FXMLLoader();
             sourceLoader.setController(selectDataSourceController);
             sourceLoader.setLocation(SelectDataServiceProvider.class.getResource("SelectDataSource.fxml"));
@@ -67,27 +67,27 @@ public class SelectDataServiceProvider implements SelectDataService {
 
             sourceScene.getStylesheets()
                     .add(graphicsModule.getClassLoader().getResource(CSS_LOCATION).toString());
-            orchestrator.primaryStage().setScene(sourceScene);
-            orchestrator.primaryStage().setTitle("KOMET Startup");
+            orchestrationService.primaryStage().setScene(sourceScene);
+            orchestrationService.primaryStage().setTitle("KOMET Startup");
 
-            orchestrator.primaryStage().addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+            orchestrationService.primaryStage().addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
                 ScreenInfo.mouseIsPressed(true);
                 ScreenInfo.mouseWasDragged(false);
             });
-            orchestrator.primaryStage().addEventFilter(MouseEvent.MOUSE_RELEASED, event -> {
+            orchestrationService.primaryStage().addEventFilter(MouseEvent.MOUSE_RELEASED, event -> {
                 ScreenInfo.mouseIsPressed(false);
                 ScreenInfo.mouseIsDragging(false);
             });
-            orchestrator.primaryStage().addEventFilter(MouseEvent.DRAG_DETECTED, event -> {
+            orchestrationService.primaryStage().addEventFilter(MouseEvent.DRAG_DETECTED, event -> {
                 ScreenInfo.mouseIsDragging(true);
                 ScreenInfo.mouseWasDragged(true);
             });
 
             // Ensure app is shutdown gracefully. Once state changes it calls appStateChangeListener.
-            orchestrator.primaryStage().setOnCloseRequest(windowEvent -> {
-                orchestrator.lifecycleProperty().set(SHUTDOWN);
+            orchestrationService.primaryStage().setOnCloseRequest(windowEvent -> {
+                orchestrationService.lifecycleProperty().set(SHUTDOWN);
             });
-            orchestrator.primaryStage().show();
+            orchestrationService.primaryStage().show();
             return null;
         }
     }

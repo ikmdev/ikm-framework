@@ -7,6 +7,8 @@ import dev.ikm.komet.kview.events.CreateJournalEvent;
 import dev.ikm.komet.preferences.JournalWindowSettings;
 import dev.ikm.komet.preferences.KometPreferences;
 import dev.ikm.komet.preferences.KometPreferencesImpl;
+import dev.ikm.orchestration.interfaces.OrchestrationService;
+import dev.ikm.tinkar.common.service.PluggableService;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.concurrent.Task;
@@ -14,13 +16,11 @@ import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.slf4j.Logger;
@@ -110,6 +110,8 @@ public class WindowMenuManager implements ListChangeListener<Window> {
                                     // wrap stage in a border pane, and add menuBar...
                                     BorderPane borderPane = new BorderPane();
                                     MenuBar menuBar = new MenuBar();
+                                    PluggableService.first(OrchestrationService.class).addMenuItems(stage, menuBar);
+
                                     borderPane.setTop(menuBar);
 
                                     Parent journalPane = stage.getScene().getRoot();
@@ -176,7 +178,7 @@ public class WindowMenuManager implements ListChangeListener<Window> {
             String windowTitle = "Journal " + LocalDateTime.now().format(SHORT_MIN_FORMATTER);
             List<String> savedWindows = appPreferences.getList(WindowServiceKeys.SAVED_WINDOWS);
 
-            int index = 97;
+            int index = Character.getNumericValue('a'); // Lowercase a;
             while (savedWindows.contains(windowTitle)) {
                 windowTitle = "Journal " + LocalDateTime.now().format(SHORT_MIN_FORMATTER) + Character.toString(index++);
             }
