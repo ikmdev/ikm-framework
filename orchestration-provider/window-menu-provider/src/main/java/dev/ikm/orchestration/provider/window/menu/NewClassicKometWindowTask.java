@@ -284,7 +284,7 @@ public class NewClassicKometWindowTask extends Task<Void> {
      * Generates the window menu for the Komet application.
      *
      * @param kometRoot the root BorderPane of the Komet window
-     * 
+     *
      */
     private static void generateWindowMenu(Stage stage, BorderPane kometRoot) {
         MenuBar menuBar = new MenuBar();

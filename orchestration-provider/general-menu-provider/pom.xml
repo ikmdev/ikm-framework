@@ -19,6 +19,11 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>dev.ikm.tinkar</groupId>
+            <artifactId>common</artifactId>
+            <version>${tinkar.version}</version>
+        </dependency>
+        <dependency>
             <groupId>dev.ikm</groupId>
             <artifactId>orchestration-interfaces</artifactId>
             <version>${project.parent.version}</version>
