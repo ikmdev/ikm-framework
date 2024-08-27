@@ -210,14 +210,12 @@ public class KometOrchestrator extends Application implements OrchestrationServi
     }
 
     private static Path resolvePluginPath() {
-        Path pluginPath = Path.of(System.getProperties().getProperty("user.home")).resolve("KometOrchestrator").resolve("plugins");
-        pluginPath = Path.of("/").resolve("Applications").resolve("Orchestrator.app").resolve("Contents").resolve("plugins");
+        Path pluginPath = Path.of("/").resolve("Applications").resolve("Orchestrator.app")
+                .resolve("Contents").resolve("plugins");
 
-        Path workingPath = Path.of(System.getProperties().getProperty("user.dir"));
-        if (!workingPath.equals(workingPath.getRoot())) { //If working path is not system root directory
-            if (workingPath.resolve("target").toFile().exists()) {
-                pluginPath = workingPath.resolve(Path.of("target/plugins"));
-            }
+        Path workingPath = Path.of(System.getProperty("user.dir"));
+        if (workingPath.resolve("target").toFile().exists()) {
+            pluginPath = workingPath.resolve(Path.of("target/plugins"));
         }
         LOG.info("Plugin directory: " + pluginPath.toAbsolutePath());
         System.out.println("Plugin directory: " + pluginPath.toAbsolutePath());
