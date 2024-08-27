@@ -178,7 +178,7 @@ public class KometOrchestrator extends Application implements OrchestrationServi
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> LOG.error("On thread: " + t, e));
 
         System.setProperty("apple.laf.useScreenMenuBar", "false");
-        System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Komet");
+        System.setProperty("com.apple.mrj.application.apple.menu.about.name", "KometOrchestrator");
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             LOG.info("Starting shutdown hook");
@@ -188,18 +188,11 @@ public class KometOrchestrator extends Application implements OrchestrationServi
         // setup plugin layers
         LOG.info("Starting KometOrchestrator");
 
-
         // setup plugin directory.
         LOG.info("Application working directory: " + System.getProperties().getProperty("user.dir"));
-        Path workingPath = Path.of(System.getProperties().getProperty("user.dir"));
-        Path pluginPath;
-        if (workingPath.resolve("target").toFile().exists()) {
-            pluginPath = workingPath.resolve(Path.of("target/plugins"));
-        } else {
-            pluginPath = workingPath.resolve("plugins");
-        }
+
+        Path pluginPath = resolvePluginPath();
         pluginPath.toFile().mkdirs();
-        LOG.info("Plugin directory: " + pluginPath.toAbsolutePath());
         IkmServiceManager.setPluginDirectory(pluginPath);
 
         // Access Preferences
@@ -214,6 +207,21 @@ public class KometOrchestrator extends Application implements OrchestrationServi
         LOG.info("Update Last run: " + userPreferences.get(OrchestratorPreferenceKeys.LAST_RUN));
         // launch application
         launch();
+    }
+
+    private static Path resolvePluginPath() {
+        Path pluginPath = Path.of(System.getProperties().getProperty("user.home")).resolve("KometOrchestrator").resolve("plugins");
+        pluginPath = Path.of("/").resolve("Applications").resolve("Orchestrator.app").resolve("Contents").resolve("plugins");
+
+        Path workingPath = Path.of(System.getProperties().getProperty("user.dir"));
+        if (!workingPath.equals(workingPath.getRoot())) { //If working path is not system root directory
+            if (workingPath.resolve("target").toFile().exists()) {
+                pluginPath = workingPath.resolve(Path.of("target/plugins"));
+            }
+        }
+        LOG.info("Plugin directory: " + pluginPath.toAbsolutePath());
+        System.out.println("Plugin directory: " + pluginPath.toAbsolutePath());
+        return pluginPath;
     }
 
 

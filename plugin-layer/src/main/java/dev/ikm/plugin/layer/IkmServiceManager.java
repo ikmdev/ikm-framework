@@ -64,7 +64,10 @@ public class IkmServiceManager {
     }
 
     public static Optional<String> findPluggableServiceLoaderJar(File dirPath, String artifactKey){
-        File filesList[] = dirPath.listFiles();
+        File[] filesList = dirPath.listFiles();
+        if (filesList == null) {
+            return Optional.empty();
+        }
         for(File file : filesList) {
             if(file.isFile()) {
                 if (file.getName().endsWith(".jar") && file.getName().startsWith(artifactKey)) {
