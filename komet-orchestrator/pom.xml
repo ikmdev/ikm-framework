@@ -15,11 +15,11 @@
     <name>Komet µsOrchestrator</name>
 
     <properties>
-        <jgit.version>6.10.0.202406032230-r-r4</jgit.version>
         <junit.version>5.10.0</junit.version>
         <javafx.version>21.0.1</javafx.version>
         <lucene-core.version>9.7.0</lucene-core.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <javafx-maven-plugin.version>0.0.8</javafx-maven-plugin.version>
     </properties>
 
     <dependencies>
