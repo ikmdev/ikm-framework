@@ -416,6 +416,9 @@
                                     <vendor>IKM</vendor>
                                     <runtimeImage>target/orchestratorRuntimeImage</runtimeImage>
                                     <module>dev.ikm.komet.orchestrator/dev.ikm.komet.orchestrator.KometOrchestrator</module>
+                                    <appContentPaths>
+                                        <appContentPath>target/plugins</appContentPath>
+                                    </appContentPaths>
                                     <javaOptions>
                                         <option>-Xmx8g</option>
                                         <option>--add-opens</option>
