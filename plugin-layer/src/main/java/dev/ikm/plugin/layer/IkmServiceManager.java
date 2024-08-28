@@ -109,14 +109,22 @@ public class IkmServiceManager {
         pluggableServiceLoaderOptional.ifPresent(serviceLoader -> PluggableService.setPluggableServiceLoader(serviceLoader));
     }
 
+
+    /**
+     * Provides the path to the plugin service loader directory whether running a local build or as an installed application.
+     *
+     * @return Path to the plugin service loader directory
+     */
     private static Path resolvePluginServiceLoaderPath() {
+        // Initialize the pluginServiceLoaderPath to the installed application plugin service loader directory
         Path pluginServiceLoaderPath = Path.of("/").resolve("Applications").resolve("Orchestrator.app")
                 .resolve("Contents").resolve("plugin-service-loader");
 
-        if (!pluginServiceLoaderPath.toFile().exists()) {
-            pluginServiceLoaderPath = Path.of(System.getProperty("user.dir")).resolve("target").resolve("plugin-service-loader");
+        // For local maven builds, use the latest plugin service loader expected to exist at the localPluginServiceLoaderPath.
+        Path localPluginServiceLoaderPath = Path.of(System.getProperty("user.dir")).resolve("target").resolve("plugin-service-loader");
+        if (localPluginServiceLoaderPath.toFile().exists()) {
+            pluginServiceLoaderPath = localPluginServiceLoaderPath;
         }
-
         LOG.info("Plugin Service Loader directory: " + pluginServiceLoaderPath.toAbsolutePath());
         return pluginServiceLoaderPath;
     }
