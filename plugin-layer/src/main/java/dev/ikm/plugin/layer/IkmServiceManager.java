@@ -118,7 +118,6 @@ public class IkmServiceManager {
         }
 
         LOG.info("Plugin Service Loader directory: " + pluginServiceLoaderPath.toAbsolutePath());
-        System.out.println("Plugin Service Loader directory: " + pluginServiceLoaderPath.toAbsolutePath());
         return pluginServiceLoaderPath;
     }
 

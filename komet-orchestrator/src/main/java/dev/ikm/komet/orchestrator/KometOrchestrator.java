@@ -189,7 +189,7 @@ public class KometOrchestrator extends Application implements OrchestrationServi
         LOG.info("Starting KometOrchestrator");
 
         // setup plugin directory.
-        LOG.info("Application working directory: " + System.getProperties().getProperty("user.dir"));
+        LOG.info("Application working directory: " + System.getProperty("user.dir"));
 
         Path pluginPath = resolvePluginPath();
         pluginPath.toFile().mkdirs();
@@ -218,7 +218,6 @@ public class KometOrchestrator extends Application implements OrchestrationServi
             pluginPath = workingPath.resolve(Path.of("target/plugins"));
         }
         LOG.info("Plugin directory: " + pluginPath.toAbsolutePath());
-        System.out.println("Plugin directory: " + pluginPath.toAbsolutePath());
         return pluginPath;
     }
 
