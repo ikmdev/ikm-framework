@@ -417,6 +417,7 @@
                                     <runtimeImage>target/orchestratorRuntimeImage</runtimeImage>
                                     <module>dev.ikm.komet.orchestrator/dev.ikm.komet.orchestrator.KometOrchestrator</module>
                                     <appContentPaths>
+                                        <appContentPath>target/plugin-service-loader</appContentPath>
                                         <appContentPath>target/plugins</appContentPath>
                                     </appContentPaths>
                                     <javaOptions>

@@ -87,7 +87,9 @@ public class IkmServiceManager {
         if (System.getProperty(PATH_KEY) == null) {
             String artifactKey = System.getProperty(ARTIFACT_KEY, DefaultPluggableServiceLoaderArtifactId);
 
-            findPluggableServiceLoaderJar(new File(System.getProperty("user.dir")),
+            Path pluginServiceLoaderPath = resolvePluginServiceLoaderPath();
+
+            findPluggableServiceLoaderJar(pluginServiceLoaderPath.toFile(),
                     artifactKey).ifPresentOrElse(pluggableServiceLoaderJar -> {
                         System.setProperty(PATH_KEY, pluggableServiceLoaderJar);
                         LOG.info("Found pluggable service loader jar: {}", pluggableServiceLoaderJar);
@@ -105,6 +107,19 @@ public class IkmServiceManager {
                 ServiceLoader.load(pluginServiceLoaderLayer, PluginServiceLoader.class);
         Optional<PluginServiceLoader> pluggableServiceLoaderOptional = pluggableServiceLoaderLoader.findFirst();
         pluggableServiceLoaderOptional.ifPresent(serviceLoader -> PluggableService.setPluggableServiceLoader(serviceLoader));
+    }
+
+    private static Path resolvePluginServiceLoaderPath() {
+        Path pluginServiceLoaderPath = Path.of("/").resolve("Applications").resolve("Orchestrator.app")
+                .resolve("Contents").resolve("plugin-service-loader");
+
+        if (!pluginServiceLoaderPath.toFile().exists()) {
+            pluginServiceLoaderPath = Path.of(System.getProperty("user.dir")).resolve("target").resolve("plugin-service-loader");
+        }
+
+        LOG.info("Plugin Service Loader directory: " + pluginServiceLoaderPath.toAbsolutePath());
+        System.out.println("Plugin Service Loader directory: " + pluginServiceLoaderPath.toAbsolutePath());
+        return pluginServiceLoaderPath;
     }
 
     /**
