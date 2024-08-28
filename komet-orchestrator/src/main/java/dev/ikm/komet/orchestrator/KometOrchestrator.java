@@ -209,13 +209,20 @@ public class KometOrchestrator extends Application implements OrchestrationServi
         launch();
     }
 
+    /**
+     * Provides the path to the plugins directory whether running a local build or as an installed application.
+     *
+     * @return Path to the plugins directory
+     */
     private static Path resolvePluginPath() {
+        // Initialize the pluginPath to the installed application plugin directory
         Path pluginPath = Path.of("/").resolve("Applications").resolve("Orchestrator.app")
                 .resolve("Contents").resolve("plugins");
 
-        Path workingPath = Path.of(System.getProperty("user.dir"));
-        if (workingPath.resolve("target").toFile().exists()) {
-            pluginPath = workingPath.resolve(Path.of("target/plugins"));
+        // For local maven builds, use the latest plugin directory expected to exist at the localPluginPath.
+        Path localPluginPath = Path.of(System.getProperty("user.dir")).resolve("target").resolve("plugins");
+        if (localPluginPath.toFile().exists()) {
+            pluginPath = localPluginPath;
         }
         LOG.info("Plugin directory: " + pluginPath.toAbsolutePath());
         return pluginPath;
