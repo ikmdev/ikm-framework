@@ -45,8 +45,8 @@ class InitializeTask extends TrackingCallable<Void> {
      */
     @Override
     protected Void compute() throws Exception {
+        updateMessage("Initializing...");
         try {
-
             InitCommand initCommand = Git.init();
             initCommand.setDirectory(changeSetFolder.toFile());
             initCommand.setInitialBranch("main");
@@ -54,6 +54,7 @@ class InitializeTask extends TrackingCallable<Void> {
 
             Git git = Git.open(changeSetFolder.toFile());
             if (git.getRepository().getRemoteNames().isEmpty()) {
+                updateMessage("Updating Git Configuration");
                 InitRemoteTask task = new InitRemoteTask(git);
                 Platform.runLater(task);
                 if (task.get()) {
@@ -66,11 +67,15 @@ class InitializeTask extends TrackingCallable<Void> {
                     config.setString("gpg", null, "format", "x509");
                     config.save();
                     TinkExecutor.threadPool().submit(new PullTask());
+                    updateMessage("Successfully updated Git Configuration");
                 }
+            } else {
+                updateMessage("Git Configuration already exists, skipping reconfiguration.");
             }
             completedUnitOfWork();
             return null;
         } catch (IllegalArgumentException | IOException ex) {
+            updateMessage("Error Initializing");
             LOG.error(ex.getLocalizedMessage(), ex);
             return null;
         }
