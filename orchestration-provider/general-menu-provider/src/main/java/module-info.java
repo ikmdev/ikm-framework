@@ -9,6 +9,7 @@ module dev.ikm.orchestration.provider.general.menu {
     requires org.eclipse.collections;
     requires dev.ikm.tinkar.common;
     requires dev.ikm.tinkar.terms;
+    requires dev.ikm.tinkar.entity;
 
     opens dev.ikm.orchestration.provider.general.menu to javafx.fxml, javafx.graphics;
 
