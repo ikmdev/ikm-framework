@@ -104,7 +104,7 @@ public class ChangeSetWriter implements Subscriber<Integer>, AutoCloseable {
      * @throws Exception if an error occurs during the close operation
      */
     @Override
-    public void close() throws Exception {
+    public void close() throws IOException {
         EntityCountSummary entityCountSummary = new EntityCountSummary(conceptsAggregatedCount.longValue(),
                 semanticsAggregatedCount.longValue(), patternsAggregatedCount.longValue(), stampsAggregatedCount.longValue());
 

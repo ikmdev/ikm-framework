@@ -100,11 +100,7 @@ public class ChangeSetWriterManager implements Subscriber<Integer>, ChangeSetWri
     public void pause() throws IOException {
         enabled.set(false);
         // Close the writer.
-        try {
-            this.changeSetWriter.close();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        this.changeSetWriter.close();
     }
 
     /**
