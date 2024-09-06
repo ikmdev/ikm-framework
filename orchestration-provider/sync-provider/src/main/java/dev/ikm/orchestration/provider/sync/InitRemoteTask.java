@@ -87,13 +87,13 @@ public class InitRemoteTask extends Task<Boolean>  {
                 .filter(response -> response == ButtonType.OK) // If OK button is pressed
                 .ifPresent(response -> {
                     try {
-                        URIish uri = new URIish(urlItem.getValue());
+                        URIish uri = new URIish(urlItem.getValue().trim());
                         git.remoteAdd()
                                 .setName("origin")
                                 .setUri(uri)
                                 .call();
-                        git.getRepository().getConfig().setString("user", null, "name", userName.getValue());
-                        git.getRepository().getConfig().setString("user", null, "email", userEmail.getValue());
+                        git.getRepository().getConfig().setString("user", null, "name", userName.getValue().trim());
+                        git.getRepository().getConfig().setString("user", null, "email", userEmail.getValue().trim());
                     } catch (URISyntaxException ex) {
                         AlertStreams.dispatchToRoot(ex);
                     } catch (GitAPIException e) {
