@@ -93,11 +93,13 @@ public class IkmServiceManager {
                     artifactKey).ifPresentOrElse(pluggableServiceLoaderJar -> {
                         System.setProperty(PATH_KEY, pluggableServiceLoaderJar);
                         LOG.info("Found pluggable service loader jar: {}", pluggableServiceLoaderJar);
-                    },
-                    () -> {throw new RuntimeException("No pluggable service loader found. \n" +
-                            "Ensure that PATH_KEY and ARTIFACT_KEY system properties are provided,\n" +
-                            "or that a pluggable service provider .jar file is provided at a discoverable location.\n\n"
-                    );});
+                    }, () -> {
+                        throw new RuntimeException("""
+                            No pluggable service loader found.
+                            Ensure that PATH_KEY and ARTIFACT_KEY system properties are provided,
+                            or that a pluggable service provider .jar file is provided at a discoverable location.
+                            """);
+                    });
         }
         String pluginServiceLoaderPath = System.getProperty(PATH_KEY);
 
@@ -118,14 +120,14 @@ public class IkmServiceManager {
     private static Path resolvePluginServiceLoaderPath() {
         // Initialize the pluginServiceLoaderPath to the installed application plugin service loader directory
         Path pluginServiceLoaderPath = Path.of("/").resolve("Applications").resolve("Orchestrator.app")
-                .resolve("Contents").resolve("plugin-service-loader");
+                .resolve("Contents").resolve(DefaultPluggableServiceLoaderArtifactId);
 
         // For local maven builds, use the latest plugin service loader expected to exist at the localPluginServiceLoaderPath.
-        Path localPluginServiceLoaderPath = Path.of(System.getProperty("user.dir")).resolve("target").resolve("plugin-service-loader");
+        Path localPluginServiceLoaderPath = Path.of(System.getProperty("user.dir")).resolve("target").resolve(DefaultPluggableServiceLoaderArtifactId);
         if (localPluginServiceLoaderPath.toFile().exists()) {
             pluginServiceLoaderPath = localPluginServiceLoaderPath;
         }
-        LOG.info("Plugin Service Loader directory: " + pluginServiceLoaderPath.toAbsolutePath());
+        LOG.info("Plugin Service Loader directory: {}", pluginServiceLoaderPath.toAbsolutePath());
         return pluginServiceLoaderPath;
     }
 
