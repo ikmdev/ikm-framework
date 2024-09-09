@@ -312,8 +312,6 @@
             </activation>
             <properties>
                 <jpackage.type>PKG</jpackage.type>
-                <jpackage.icon>src/main/resources/icons/ORCHESTRATOR.icns</jpackage.icon>
-                <jpackage.resourceDir>target/plugins</jpackage.resourceDir>
             </properties>
         </profile>
         <profile>
@@ -326,8 +324,6 @@
             </activation>
             <properties>
                 <jpackage.type>RPM</jpackage.type>
-                <jpackage.icon>src/main/resources/icons/Orchestrator.png</jpackage.icon>
-                <jpackage.resourceDir>installer_resources/resourceDir_unix</jpackage.resourceDir>
             </properties>
         </profile>
         <profile>
@@ -339,8 +335,6 @@
             </activation>
             <properties>
                 <jpackage.type>MSI</jpackage.type>
-                <jpackage.icon>src/main/resources/icons/Orchestrator.ico</jpackage.icon>
-                <jpackage.resourceDir>installer_resources/resourceDir_win</jpackage.resourceDir>
             </properties>
         </profile>
         <!-- END: Profiles to configure JPackage flags for Mac, Linux, & Windows Installers -->
@@ -410,9 +404,7 @@
                                     <name>${jpackage.app.name}</name>
                                     <appVersion>${jpackage.app.version}</appVersion> <!-- Requires Semantic Versioning with major version > zero -->
                                     <destination>${jpackage.app.dest}</destination>
-<!--                                    <resourceDir>${jpackage.resourceDir}</resourceDir>-->
                                     <type>${jpackage.type}</type>
-                                    <!--                            <icon>${jpackage.icon}</icon>-->
                                     <vendor>IKM</vendor>
                                     <runtimeImage>target/orchestratorRuntimeImage</runtimeImage>
                                     <module>dev.ikm.komet.orchestrator/dev.ikm.komet.orchestrator.KometOrchestrator</module>
