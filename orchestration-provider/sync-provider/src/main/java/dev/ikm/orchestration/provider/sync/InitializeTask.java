@@ -1,9 +1,12 @@
 package dev.ikm.orchestration.provider.sync;
 
 import dev.ikm.orchestration.interfaces.changeset.ChangeSetWriterService;
+import dev.ikm.tinkar.common.service.TinkExecutor;
 import dev.ikm.tinkar.common.service.TrackingCallable;
+import javafx.application.Platform;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.InitCommand;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,46 +45,37 @@ class InitializeTask extends TrackingCallable<Void> {
      */
     @Override
     protected Void compute() throws Exception {
+        updateMessage("Initializing...");
         try {
-
             InitCommand initCommand = Git.init();
             initCommand.setDirectory(changeSetFolder.toFile());
             initCommand.setInitialBranch("main");
             initCommand.call();
 
             Git git = Git.open(changeSetFolder.toFile());
-            String configText = git.getRepository().getConfig().toText();
-            // Workaround for: https://bugs.eclipse.org/bugs/show_bug.cgi?id=581483
-            if (!configText.contains("x509")) {
-                git.getRepository().getConfig().fromText(
-                        """
-[core]
-	repositoryformatversion = 0
-	filemode = true
-	bare = false
-	logallrefupdates = true
-	ignorecase = true
-	precomposeunicode = true
-[submodule]
-	active = .
-[remote "git@github.com:kec/proto-zip.git"]
-	url = https://kec@github.com/kec/proto-zip.git
-	fetch = +refs/heads/*:refs/remotes/origin/*
-	gtServiceAccountIdentifier = f1d16de25bf52ee2f3155f49b00a7906072cd8db40dcc853c60c4f9282320494
-[gpg]
-   format = x509
-[commit]
-    gpgsign = false
-[branch "main"]
-	remote = origin
-	merge = refs/heads/main
-                                  """
-                );
-                git.getRepository().getConfig().save();
+            if (git.getRepository().getRemoteNames().isEmpty()) {
+                updateMessage("Updating Git Configuration");
+                InitRemoteTask task = new InitRemoteTask(git);
+                Platform.runLater(task);
+                if (task.get()) {
+                    StoredConfig config = git.getRepository().getConfig();
+                    config.setBoolean("core", null, "ignorecase", true);
+                    config.setBoolean("core", null, "bare", false);
+                    config.setString("submodule", null, "active", ".");
+                    config.setBoolean("commit", null, "gpgsign", false);
+                    // GPG Format Workaround: https://bugs.eclipse.org/bugs/show_bug.cgi?id=581483
+                    config.setString("gpg", null, "format", "x509");
+                    config.save();
+                    TinkExecutor.threadPool().submit(new PullTask());
+                    updateMessage("Successfully updated Git Configuration");
+                }
+            } else {
+                updateMessage("Git Configuration already exists, skipping reconfiguration.");
             }
             completedUnitOfWork();
             return null;
         } catch (IllegalArgumentException | IOException ex) {
+            updateMessage("Error Initializing");
             LOG.error(ex.getLocalizedMessage(), ex);
             return null;
         }

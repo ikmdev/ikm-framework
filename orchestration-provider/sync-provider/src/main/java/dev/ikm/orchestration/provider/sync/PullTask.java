@@ -29,7 +29,6 @@ class PullTask extends TrackingCallable<Void> {
             Git git = Git.open(changeSetFolder.toFile());
 
             PullCommand pullCommand = git.pull();
-            pullCommand.setRemote("git@github.com:kec/proto-zip.git");
             pullCommand.setProgressMonitor(new JGitProgressMonitor());
             pullCommand.setRemoteBranchName("main");
             pullCommand.setCredentialsProvider(

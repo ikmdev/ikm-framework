@@ -64,7 +64,10 @@ public class IkmServiceManager {
     }
 
     public static Optional<String> findPluggableServiceLoaderJar(File dirPath, String artifactKey){
-        File filesList[] = dirPath.listFiles();
+        File[] filesList = dirPath.listFiles();
+        if (filesList == null) {
+            return Optional.empty();
+        }
         for(File file : filesList) {
             if(file.isFile()) {
                 if (file.getName().endsWith(".jar") && file.getName().startsWith(artifactKey)) {
@@ -84,15 +87,19 @@ public class IkmServiceManager {
         if (System.getProperty(PATH_KEY) == null) {
             String artifactKey = System.getProperty(ARTIFACT_KEY, DefaultPluggableServiceLoaderArtifactId);
 
-            findPluggableServiceLoaderJar(new File(System.getProperty("user.dir")),
+            Path pluginServiceLoaderPath = resolvePluginServiceLoaderPath();
+
+            findPluggableServiceLoaderJar(pluginServiceLoaderPath.toFile(),
                     artifactKey).ifPresentOrElse(pluggableServiceLoaderJar -> {
                         System.setProperty(PATH_KEY, pluggableServiceLoaderJar);
                         LOG.info("Found pluggable service loader jar: {}", pluggableServiceLoaderJar);
-                    },
-                    () -> {throw new RuntimeException("No pluggable service loader found. \n" +
-                            "Ensure that PATH_KEY and ARTIFACT_KEY system properties are provided,\n" +
-                            "or that a pluggable service provider .jar file is provided at a discoverable location.\n\n"
-                    );});
+                    }, () -> {
+                        throw new RuntimeException("""
+                            No pluggable service loader found.
+                            Ensure that PATH_KEY and ARTIFACT_KEY system properties are provided,
+                            or that a pluggable service provider .jar file is provided at a discoverable location.
+                            """);
+                    });
         }
         String pluginServiceLoaderPath = System.getProperty(PATH_KEY);
 
@@ -102,6 +109,26 @@ public class IkmServiceManager {
                 ServiceLoader.load(pluginServiceLoaderLayer, PluginServiceLoader.class);
         Optional<PluginServiceLoader> pluggableServiceLoaderOptional = pluggableServiceLoaderLoader.findFirst();
         pluggableServiceLoaderOptional.ifPresent(serviceLoader -> PluggableService.setPluggableServiceLoader(serviceLoader));
+    }
+
+
+    /**
+     * Provides the path to the plugin service loader directory whether running a local build or as an installed application.
+     *
+     * @return Path to the plugin service loader directory
+     */
+    private static Path resolvePluginServiceLoaderPath() {
+        // Initialize the pluginServiceLoaderPath to the installed application plugin service loader directory
+        Path pluginServiceLoaderPath = Path.of("/").resolve("Applications").resolve("Orchestrator.app")
+                .resolve("Contents").resolve(DefaultPluggableServiceLoaderArtifactId);
+
+        // For local maven builds, use the latest plugin service loader expected to exist at the localPluginServiceLoaderPath.
+        Path localPluginServiceLoaderPath = Path.of(System.getProperty("user.dir")).resolve("target").resolve(DefaultPluggableServiceLoaderArtifactId);
+        if (localPluginServiceLoaderPath.toFile().exists()) {
+            pluginServiceLoaderPath = localPluginServiceLoaderPath;
+        }
+        LOG.info("Plugin Service Loader directory: {}", pluginServiceLoaderPath.toAbsolutePath());
+        return pluginServiceLoaderPath;
     }
 
     /**

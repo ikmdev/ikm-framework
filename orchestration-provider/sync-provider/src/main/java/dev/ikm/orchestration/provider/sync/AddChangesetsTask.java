@@ -1,6 +1,7 @@
 package dev.ikm.orchestration.provider.sync;
 
 import dev.ikm.orchestration.interfaces.changeset.ChangeSetWriterService;
+import dev.ikm.tinkar.common.alert.AlertStreams;
 import dev.ikm.tinkar.common.service.PluggableService;
 import dev.ikm.tinkar.common.service.TrackingCallable;
 import org.eclipse.collections.api.factory.Lists;
@@ -9,6 +10,7 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.slf4j.Logger;
@@ -25,7 +27,7 @@ import java.util.List;
  * It extends the {@link TrackingCallable} class.
  */
 public class AddChangesetsTask extends TrackingCallable<Void> {
-    private static final Logger LOG = LoggerFactory.getLogger(InitializeTask.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AddChangesetsTask.class);
 
     final Path changeSetFolder = ChangeSetWriterService.changeSetFolder();
     /**
@@ -45,15 +47,14 @@ public class AddChangesetsTask extends TrackingCallable<Void> {
      * Extends the TrackingCallable class. This task pauses the ChangeSetWriterService
      * which ensures that only completed zip files will be synchronized.
      *
-     * @throws Exception if an error occurs during computation
      */
     @Override
-    protected Void compute() throws Exception {
-        try {
-            this.updateMessage("Pausing change set writer service");
-            ChangeSetWriterService changeSetWriterService = PluggableService.first(ChangeSetWriterService.class);
-            changeSetWriterService.pause();
+    protected Void compute() {
+        this.updateMessage("Pausing change set writer service");
+        ChangeSetWriterService changeSetWriterService = PluggableService.first(ChangeSetWriterService.class);
+        silentPauseChangesetWriter(changeSetWriterService);
 
+        try {
             Git git = Git.open(changeSetFolder.toFile());
 
             ImmutableList<String> filesToAdd = filesToAdd(changeSetFolder, ".proto.zip");
@@ -63,18 +64,38 @@ public class AddChangesetsTask extends TrackingCallable<Void> {
                 addCommand.addFilepattern(s);
                 this.updateMessage("Adding changeset " + s);
             });
+
             DirCache dirCache = addCommand.call();
             CommitCommand commitCommand = git.commit();
             commitCommand.setMessage("Manual changeset add");
             commitCommand.setAll(true);
             RevCommit revCommit = commitCommand.call();
-
-            changeSetWriterService.resume();
-            this.updateMessage("Resumed change set writer service");
-            return null;
-        } catch (IllegalArgumentException | IOException ex) {
+            LOG.info(String.format("Successfully Committed %i files: %s", filesToAdd.size(), filesToAdd));
+        } catch (IOException | GitAPIException ex) {
             LOG.error(ex.getLocalizedMessage(), ex);
-            return null;
+            AlertStreams.dispatchToRoot(ex);
+        } finally {
+            silentResumeChangesetWriter(changeSetWriterService);
+            this.updateMessage("Resumed change set writer service");
+        }
+        return null;
+    }
+
+    // TODO: Implement better handling of IOException caused by closing changeset writer when it is not running
+    private void silentPauseChangesetWriter(ChangeSetWriterService changeSetWriterService) {
+        try {
+            changeSetWriterService.pause();
+        } catch (IOException ex) {
+            LOG.error(ex.getLocalizedMessage(), ex);
+        }
+    }
+
+    // TODO: Implement better handling of IOException caused by resuming changeset writer when it is already running
+    private void silentResumeChangesetWriter(ChangeSetWriterService changeSetWriterService) {
+        try {
+            changeSetWriterService.resume();
+        } catch (IOException ex) {
+            LOG.error(ex.getLocalizedMessage(), ex);
         }
     }
 

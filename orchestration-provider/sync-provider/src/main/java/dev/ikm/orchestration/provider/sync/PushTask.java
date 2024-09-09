@@ -29,7 +29,6 @@ public class PushTask extends TrackingCallable<Void> {
 
                 Git git = Git.open(changeSetFolder.toFile());
                 PushCommand pushCommand = git.push();
-                pushCommand.setRemote("git@github.com:kec/proto-zip.git");
                 pushCommand.setProgressMonitor(new JGitProgressMonitor());
                 pushCommand.setCredentialsProvider(
                         new PluginCredentialProvider());
