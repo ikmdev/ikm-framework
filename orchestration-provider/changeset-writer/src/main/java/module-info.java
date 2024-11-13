@@ -13,7 +13,7 @@ module dev.ikm.orchestration.provider.changeset.writer {
     requires dev.ikm.tinkar.entity;
     requires dev.ikm.tinkar.schema;
     requires dev.ikm.tinkar.terms;
-    requires org.eclipse.collections.api;
+    requires dev.ikm.jpms.eclipse.collections.api;
 
     provides ChangeSetWriterService with ChangeSetWriterProvider;
 }

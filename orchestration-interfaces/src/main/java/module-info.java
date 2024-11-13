@@ -7,7 +7,7 @@
 module dev.ikm.orchestration.interfaces {
     requires javafx.graphics;
     requires javafx.controls;
-    requires org.eclipse.collections.api;
+    requires dev.ikm.jpms.eclipse.collections.api;
     requires dev.ikm.tinkar.common;
     requires dev.ikm.komet.framework;
     requires dev.ikm.komet.kview;

@@ -5,8 +5,8 @@ import dev.ikm.orchestration.provider.general.menu.GeneralMenuProvider;
 module dev.ikm.orchestration.provider.general.menu {
     requires dev.ikm.orchestration.interfaces;
     requires javafx.controls;
-    requires org.eclipse.collections.api;
-    requires org.eclipse.collections;
+    requires dev.ikm.jpms.eclipse.collections.api;
+    requires dev.ikm.jpms.eclipse.collections;
     requires dev.ikm.tinkar.common;
     requires dev.ikm.tinkar.terms;
     requires dev.ikm.tinkar.entity;
