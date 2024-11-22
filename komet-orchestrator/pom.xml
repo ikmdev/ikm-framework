@@ -253,6 +253,16 @@
                                     <artifactId>lucene-sandbox</artifactId>
                                     <version>${lucene-core.version}</version>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.lucene</groupId>
+                                    <artifactId>lucene-suggest</artifactId>
+                                    <version>${lucene-core.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.lucene</groupId>
+                                    <artifactId>lucene-analysis-common</artifactId>
+                                    <version>${lucene-core.version}</version>
+                                </artifactItem>
                             </artifactItems>
                             <outputDirectory>${project.build.directory}/plugins/search</outputDirectory>
                         </configuration>
