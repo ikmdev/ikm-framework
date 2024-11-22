@@ -29,8 +29,8 @@ module dev.ikm.orchestration.provider.sync {
     requires dev.ikm.tinkar.common;
     requires dev.ikm.komet.preferences;
     requires javafx.controls;
-    requires org.eclipse.collections.api;
-    requires org.eclipse.collections;
+    requires dev.ikm.jpms.eclipse.collections.api;
+    requires dev.ikm.jpms.eclipse.collections;
     requires org.controlsfx.controls;
 
     exports dev.ikm.orchestration.provider.sync.credential to org.controlsfx.controls, javafx.graphics;

@@ -10,18 +10,18 @@ import dev.ikm.orchestration.provider.stats.menu.StatsMenuProvider;
  * @module dev.ikm.orchestration.provider.stats
  * @requires dev.ikm.orchestration.interfaces
  * @requires javafx.controls
- * @requires org.eclipse.collections.api
+ * @requires dev.ikm.jpms.eclipse.collections.api
  * @requires dev.ikm.tinkar.common
- * @requires org.eclipse.collections
+ * @requires dev.ikm.jpms.eclipse.collections
  * @requires dev.ikm.tinkar.terms
  * @provides MenuService with StatsMenuProvider, ChangeSetMenuProvider
  */
 module dev.ikm.orchestration.provider.stats {
     requires dev.ikm.orchestration.interfaces;
     requires javafx.controls;
-    requires org.eclipse.collections.api;
+    requires dev.ikm.jpms.eclipse.collections.api;
     requires dev.ikm.tinkar.common;
-    requires org.eclipse.collections;
+    requires dev.ikm.jpms.eclipse.collections;
     requires dev.ikm.tinkar.terms;
 
     provides MenuService with StatsMenuProvider;

@@ -15,8 +15,8 @@ module dev.ikm.orchestration.provider.window.service {
     requires dev.ikm.tinkar.common;
     requires javafx.controls;
     requires javafx.graphics;
-    requires org.eclipse.collections;
-    requires org.eclipse.collections.api;
+    requires dev.ikm.jpms.eclipse.collections;
+    requires dev.ikm.jpms.eclipse.collections.api;
     requires org.slf4j;
     requires dev.ikm.komet.kview;
 
