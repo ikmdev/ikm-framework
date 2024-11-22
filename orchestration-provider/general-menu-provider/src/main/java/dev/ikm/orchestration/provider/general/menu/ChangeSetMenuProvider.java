@@ -2,6 +2,7 @@ package dev.ikm.orchestration.provider.general.menu;
 
 import dev.ikm.orchestration.interfaces.changeset.ChangeSetWriterService;
 import dev.ikm.orchestration.interfaces.menu.MenuService;
+import dev.ikm.tinkar.common.alert.AlertStreams;
 import dev.ikm.tinkar.common.service.PluggableService;
 import dev.ikm.tinkar.common.service.TinkExecutor;
 import dev.ikm.tinkar.entity.aggregator.TemporalEntityAggregator;
@@ -47,7 +48,7 @@ public class ChangeSetMenuProvider implements MenuService {
                     temporalEntityAggregator.aggregate(changeSetWriterService::write);
                     changeSetWriterService.pause();
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    AlertStreams.dispatchToRoot(e);
                 }
             });
         });
@@ -55,11 +56,25 @@ public class ChangeSetMenuProvider implements MenuService {
 
         MenuItem loadChangeSetsMenuItem = new MenuItem("Load Change Sets");
         loadChangeSetsMenuItem.setOnAction(event -> {
-            Path changeSetFolder = ChangeSetWriterService.changeSetFolder();
-            File[] matchingFiles = changeSetFolder.toFile().listFiles((dir, name) -> name.endsWith(".proto.zip"));
-            Arrays.stream(matchingFiles).forEach((protoFile) -> {
-                TinkExecutor.ioThreadPool().submit(new LoadEntitiesFromProtobufFile(protoFile));
-            });
+            ChangeSetWriterService changeSetWriterService = PluggableService.first(ChangeSetWriterService.class);
+            try {
+                if (changeSetWriterService.getWriteStatus() == false) {
+                    changeSetWriterService.pause();
+                }
+                Path changeSetFolder = ChangeSetWriterService.changeSetFolder();
+                File[] matchingFiles = changeSetFolder.toFile().listFiles((dir, name) -> name.endsWith(".proto.zip"));
+                Arrays.stream(matchingFiles).forEach((protoFile) -> {
+                    TinkExecutor.ioThreadPool().submit(new LoadEntitiesFromProtobufFile(protoFile));
+                });
+            } catch (IOException ex) {
+                AlertStreams.dispatchToRoot(ex);
+            } finally {
+                try {
+                    changeSetWriterService.resume();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         });
         menuItems.put("Edit", loadChangeSetsMenuItem);
 
