@@ -18,6 +18,7 @@
         <komet.version>1.38.0-SNAPSHOT</komet.version>
         <tinkar.version>1.77.0</tinkar.version>
         <jgit.version>6.10.0.202406032230-r-r5</jgit.version>
+        <maven.github-flow.version>1.21.1-r4</maven.github-flow.version>
     </properties>
     <build>
         <plugins>
@@ -26,7 +27,40 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.6.1</version>
             </plugin>
+            <plugin>
+				<groupId>dev.ikm</groupId>
+				<artifactId>gitflow-maven-plugin</artifactId>
+			</plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+					<groupId>dev.ikm</groupId>
+					<artifactId>gitflow-maven-plugin</artifactId>
+					<version>${maven.github-flow.version}</version>
+					<configuration>
+						<featureNamePattern>^(?!(((feature|hotfix|bugfix))\/(IKM|AR|IAT|IC|IKMC|IKDT|IKMD|IIA|IKMW|IKMM|TE)-\d+(-[0-9A-Za-z\-]*)*)|main|prod|master|dev).*$</featureNamePattern>
+						<separateFinishBranches>true</separateFinishBranches>
+						<gitFlowConfig>
+							<developmentBranch>main</developmentBranch>
+							<productionBranch>main</productionBranch>
+							<featureBranchPrefix>feature/</featureBranchPrefix>
+							<finishBranchPrefix>finished/</finishBranchPrefix>
+							<hotfixBranchPrefix>hotfix/</hotfixBranchPrefix>
+							<supportBranchPrefix>support/</supportBranchPrefix>
+							<releaseBranchPrefix>release/</releaseBranchPrefix>
+						</gitFlowConfig>
+						<commitMessages>
+							<featureStartMessage>Update version to start feature: @{featureName}</featureStartMessage>
+							<featureFinishMessage>Update version to finish feature: @{featureName}</featureFinishMessage>
+							<releaseStartMessage>Update release version: @{version}</releaseStartMessage>
+							<tagReleaseMessage>Tag release: @{version}</tagReleaseMessage>
+							<releaseFinishMessage>Update development version: @{version}</releaseFinishMessage>
+						</commitMessages>
+					</configuration>
+				</plugin>
+            </plugins>
+        </pluginManagement>
     </build>
     <modules>
         <module>plugin-layer</module>
