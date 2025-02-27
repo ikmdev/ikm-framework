@@ -7,7 +7,7 @@ FDA Shield - Client
 
 Follow the instructions below to set up the local environment for `ikm-framework`:
 
-1. Download and install Open JDK Java 19
+1. Download and install Open JDK Java 23
 
 2. Download and install Apache Maven 3.9 or greater
 
