@@ -6,7 +6,7 @@
     <parent>
         <groupId>dev.ikm</groupId>
         <artifactId>ikm-framework</artifactId>
-        <version>3.0.1-SNAPSHOT</version>
+        <version>3.0.1-AR-299_Java23-SNAPSHOT</version>
     </parent>
     <packaging>pom</packaging>
 
