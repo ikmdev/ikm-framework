@@ -14,6 +14,7 @@
 		<junit.version>5.12.0</junit.version>
 		<log4j-slf4j2.version>3.0.0-beta2</log4j-slf4j2.version>
 		<maven.compiler.release>23</maven.compiler.release>
+		<java.compilerArgs>--enable-preview</java.compilerArgs>
 		<slf4j.version>2.0.13</slf4j.version>
 		<komet.version>1.48.0-SNAPSHOT</komet.version>
 		<tinkar.version>1.85.0</tinkar.version>
